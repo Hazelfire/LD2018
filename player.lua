@@ -47,6 +47,7 @@ function Player:update()
 
   if self.footCollider:exit('ground') then
     self.grounded = false
+    self.collider:setFriction(0)
   end
   
   if self.footCollider:enter('ground') then
