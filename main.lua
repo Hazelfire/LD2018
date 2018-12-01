@@ -1,7 +1,6 @@
 wf = require 'windfield'
 SpriteLoader = require 'spriteLoader'
 Player = require 'player'
-SpriteLoader = require 'spriteLoader'
 Manager = require 'manager'
 Terrain = require 'terrain'
 Wall = require 'wall'
@@ -37,6 +36,4 @@ end
 
 function love.draw()
     manager:renderObjects()
-
-    local width, height = love.graphics.getDimensions()
 end
