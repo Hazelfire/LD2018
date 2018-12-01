@@ -76,6 +76,23 @@ function Player:joystickControls()
             self.carry = self.carry:destroy()
         end
     end
+
+    local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30, {'item'})
+    for _, collider in ipairs(colliders) do
+        if myJoystick:isGamepadDown("x") then
+            if not self.weapon then
+                self.weapon = world:addJoint('WeldJoint', collider, self.collider, collider:getX(), collider:getY(), false)
+            end
+        end
+    end
+
+    if myJoystick:isGamepadDown("rightshoulder") then
+        if self.weapon then
+            item,_ = self.weapon:getBodies()
+            item:applyLinearImpulse(0, -150)
+            self.weapon = self.weapon:destroy()        
+        end
+    end
 end
 
 function xor(a, b)
