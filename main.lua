@@ -24,7 +24,7 @@ function love.load()
 
     Item:new(world, 150, 100)
 
-    Terrain:makeBoundary(world, sprites['platform_support.png'])
+    Terrain:makeLevel(world, sprites)
 end
 
 function love.update(dt)
