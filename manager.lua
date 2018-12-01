@@ -18,6 +18,18 @@ function prototype:addObject(object)
     table.insert(self.objects, object)
 end
 
+function getIndex(table, el)
+    for index, value in pairs(table) do
+        if value == el then
+            return index
+        end
+    end
+end
+
+function prototype:removeObject(object)
+    table.remove(self.objects, getIndex(self.objects, object))
+end
+
 function prototype:updateObjects(dt)
     for key, object in pairs(self.objects) do
         if(object.collider and object.collider:isDestroyed()) then

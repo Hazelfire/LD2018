@@ -9,13 +9,14 @@ Item = require 'items'
 
 function love.load()
     love.window.setMode(800, 608)
-    
+
     sprites = SpriteLoader:loadSprites()
 
     world = wf.newWorld(0, 0, true)
     world:addCollisionClass('ground')
     world:addCollisionClass('player', {ignores= {'player'}})
     world:addCollisionClass('item', {ignores={'player'}})
+    world:addCollisionClass('dead')
     world:setGravity(0, 1024)
 
     manager = Manager:new()
