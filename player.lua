@@ -12,6 +12,7 @@ function Player:new(world, x, y, joystick)
    self.footCollider = world:newRectangleCollider(x + PLAYER_WIDTH / 4, y + PLAYER_HEIGHT, PLAYER_WIDTH / 2, 2)
 
    self.joystick = joystick
+   self.world = world
 
    setmetatable(self, Player)
    Player.__index = Player
@@ -28,6 +29,7 @@ function Player:getFootPos()
 end
 
 function Player:joystickControls()
+  local world = self.world
   local myJoystick = self.joystick
   x, y = self.collider:getLinearVelocity()
   local speed = myJoystick:getGamepadAxis("leftx") * PLAYER_SPEED
@@ -37,6 +39,22 @@ function Player:joystickControls()
     if myJoystick:isGamepadDown("a") then
       x, y = self.collider:getLinearVelocity()
       self.collider:setLinearVelocity(x, JUMP_SPEED)
+    end
+  end
+
+  local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30)
+  for _, collider in ipairs(colliders) do
+    if collider.collision_class == 'item' then
+      if myJoystick:isGamepadDown("x") then
+        if not self.carry then
+          self.carry = world:addJoint('RopeJoint', collider, self.collider, collider:getX(), collider:getY(), self.collider:getX(), self.collider:getY(), 30, false)
+        end
+      end
+    end
+  end
+  if not myJoystick:isGamepadDown("x") then
+    if self.carry then
+      self.carry = self.carry:destroy()
     end
   end
 end
