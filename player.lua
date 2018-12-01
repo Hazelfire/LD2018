@@ -1,4 +1,6 @@
+Animator = require 'animator'
 DeadPlayer = require 'deadplayer'
+
 Player = {}
 
 PLAYER_HEIGHT = 28
@@ -6,7 +8,7 @@ PLAYER_WIDTH = 16
 PLAYER_SPEED = 150
 JUMP_SPEED = -600
 
-function Player:new(world, x, y, joystick)
+function Player:new(world, x, y, joystick, sprites)
     self = {}
     self.collider = world:newRectangleCollider(x, y, PLAYER_WIDTH, PLAYER_HEIGHT)
     self.collider:setCollisionClass('player')
@@ -19,6 +21,16 @@ function Player:new(world, x, y, joystick)
     self.footCollider = world:newRectangleCollider(x + PLAYER_WIDTH / 4, y + PLAYER_HEIGHT, PLAYER_WIDTH / 2, 2)
     self.footCollider:setCollisionClass('foot')
     self.footCollider:setFixedRotation(true)
+
+    self.animator = Animator:new()
+    self.animator:setFrames({
+        sprites['right walk 1.png'],
+        sprites['right walk 2.png'],
+    })
+    self.animator:setDelay(0.1)
+    self.idle = sprites['right walk 1.png']
+
+    self.walking = false
 
     setmetatable(self, Player)
     Player.__index = Player
@@ -48,6 +60,9 @@ function Player:joystickControls()
         end
     end
 
+    self.walking = (speed ~= 0) and true or false
+    self.animator:setDelay(0.5 - (math.abs(speed) / 150 * 0.5) + 0.1)
+
     local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30)
     for _, collider in ipairs(colliders) do
         if collider.collision_class == 'dead' then
@@ -74,7 +89,7 @@ function Player:die()
     self:delete()
 end
 
-function Player:update()
+function Player:update(dt)
     if self.collider:enter('enemy') then
         self:die()
     else
@@ -83,7 +98,6 @@ function Player:update()
         else
             footX, footY = self:getFootPos()
             self.footCollider:setPosition(footX, footY)
-
 
             exitGround = self.footCollider:exit('ground')
             enterGround = self.footCollider:enter('ground')
@@ -96,11 +110,13 @@ function Player:update()
             self:joystickControls()
         end
     end
+
+    self.sprite = (self.walking) and self.animator:getNextFrame(dt) or self.idle
 end
 
 function Player:render()
     love.graphics.push()
-        love.graphics.draw(sprites['right walk 2.png'], self.collider:getX() - 16, self.collider:getY() - 16)
+        love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
     love.graphics.pop()
 end
 

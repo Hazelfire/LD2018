@@ -38,7 +38,7 @@ function love.update(dt)
 end
 
 function love.joystickadded(joystick)
-    Player:new(world, 100, 100, joystick)
+    Player:new(world, 100, 100, joystick, sprites)
 end
 
 function love.draw()
