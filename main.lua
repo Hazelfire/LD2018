@@ -1,7 +1,6 @@
 wf = require 'windfield'
 SpriteLoader = require 'spriteLoader'
 Player = require 'player'
-SpriteLoader = require 'spriteLoader'
 Manager = require 'manager'
 Terrain = require 'terrain'
 Wall = require 'wall'
@@ -16,7 +15,8 @@ function love.load()
     world:addCollisionClass('ground')
     world:addCollisionClass('player', {ignores= {'player'}})
     world:addCollisionClass('item', {ignores={'player'}})
-    world:addCollisionClass('dead')
+    world:addCollisionClass('dead', {ignores={'player'}})
+    world:addCollisionClass('foot', {ignores={'player', 'dead','item'}})
     world:setGravity(0, 1024)
 
     manager = Manager:new()
@@ -38,6 +38,4 @@ end
 
 function love.draw()
     manager:renderObjects()
-
-    local width, height = love.graphics.getDimensions()
 end

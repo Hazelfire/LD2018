@@ -1,8 +1,8 @@
 DeadPlayer = require 'deadplayer'
 Player = {}
 
-PLAYER_HEIGHT = 20
-PLAYER_WIDTH = 20
+PLAYER_HEIGHT = 28
+PLAYER_WIDTH = 16
 PLAYER_SPEED = 150
 JUMP_SPEED = -400
 
@@ -10,11 +10,15 @@ function Player:new(world, x, y, joystick)
     self = {}
     self.collider = world:newRectangleCollider(x, y, PLAYER_WIDTH, PLAYER_HEIGHT)
     self.collider:setCollisionClass('player')
-    self.footCollider = world:newRectangleCollider(x + PLAYER_WIDTH / 4, y + PLAYER_HEIGHT, PLAYER_WIDTH / 2, 2)
 
     self.joystick = joystick
     self.world = world
     self.grounded = false
+
+    self.collider:setFixedRotation(true)
+    self.footCollider = world:newRectangleCollider(x + PLAYER_WIDTH / 4, y + PLAYER_HEIGHT, PLAYER_WIDTH / 2, 2)
+    self.footCollider:setCollisionClass('foot')
+    self.footCollider:setFixedRotation(true)
 
     setmetatable(self, Player)
     Player.__index = Player
@@ -78,29 +82,7 @@ function Player:update()
 
         exitGround = self.footCollider:exit('ground')
         enterGround = self.footCollider:enter('ground')
-        exitDead = self.footCollider:exit('dead')
-        enterDead = self.footCollider:enter('dead')
-
-        if not (exitGround or enterGround or exitDead or enterDead) then
-            self.grounded = self.grounded
-        else
-            if self.grounded then
-                if not (exitGround or enterGround or exitDead or enterDead) then
-                    self.grounded = self.grounded
-                else
-                    print("Something happened")
-                    exitedGround = xor(exitGround, enterGround)
-                    exitedDead = xor(exitDead, enterDead)
-                    if exitedGround or exitedDead then
-                        self.grounded = false
-                    end
-                end
-            else
-                if enterGround or enterDead then
-                    self.grounded = true
-                end
-            end
-        end
+        self.grounded = xor(self.grounded, xor(enterGround, exitGround))
 
         if not self.grounded then
             self.collider:setFriction(0)
@@ -108,12 +90,12 @@ function Player:update()
         
         self:joystickControls()
     end
+
 end
 
 function Player:render()
     love.graphics.push()
-        love.graphics.rectangle("fill", self.collider:getX() - PLAYER_WIDTH / 2, self.collider:getY() - PLAYER_HEIGHT / 2, PLAYER_WIDTH, PLAYER_HEIGHT)
-        love.graphics.rectangle("line", self.footCollider:getX() - PLAYER_WIDTH / 4, self.footCollider:getY() - 1, PLAYER_WIDTH / 2, 2)
+        love.graphics.draw(sprites['right walk 2.png'], self.collider:getX() - 16, self.collider:getY() - 16)
     love.graphics.pop()
 end
 
