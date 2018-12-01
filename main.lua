@@ -43,4 +43,5 @@ end
 
 function love.draw()
     manager:renderObjects()
+    world:draw()
 end

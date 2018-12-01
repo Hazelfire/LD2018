@@ -13,6 +13,7 @@ function Enemy:new(world, x, y)
 
     self.collider = world:newRectangleCollider(x, y, ENEMY_WIDTH, ENEMY_HEIGHT)
     self.collider:setCollisionClass('enemy')
+    self.collider:setFixedRotation(true)
 
     self.collider:setFixedRotation(true)
     self.footCollider = world:newRectangleCollider(x + ENEMY_WIDTH / 4, y + ENEMY_HEIGHT, ENEMY_WIDTH / 2, 2)
