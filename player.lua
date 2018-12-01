@@ -1,3 +1,5 @@
+Animator = require 'animator'
+
 Player = {}
 
 PLAYER_HEIGHT = 28
@@ -5,7 +7,7 @@ PLAYER_WIDTH = 16
 PLAYER_SPEED = 150
 JUMP_SPEED = -400
 
-function Player:new(world, x, y, joystick)
+function Player:new(world, x, y, joystick, sprites)
     self = {}
     self.collider = world:newRectangleCollider(x, y, PLAYER_WIDTH, PLAYER_HEIGHT)
     self.collider:setCollisionClass('player')
@@ -14,6 +16,16 @@ function Player:new(world, x, y, joystick)
     self.footCollider:setFixedRotation(true)
 
     self.joystick = joystick
+
+    self.animator = Animator:new()
+    self.animator:setFrames({
+        sprites['right walk 1.png'],
+        sprites['right walk 2.png'],
+    })
+    self.animator:setDelay(0.1)
+    self.idle = sprites['right walk 1.png']
+
+    self.walking = false
 
     setmetatable(self, Player)
     Player.__index = Player
@@ -41,9 +53,12 @@ function Player:joystickControls()
             self.collider:setLinearVelocity(x, JUMP_SPEED)
         end
     end
+
+    self.walking = (speed ~= 0) and true or false
+    self.animator:setDelay(0.5 - (math.abs(speed) / 150 * 0.5) + 0.1)
 end
 
-function Player:update()
+function Player:update(dt)
     footX, footY = self:getFootPos()
     self.footCollider:setPosition(footX, footY)
 
@@ -57,19 +72,14 @@ function Player:update()
     end
 
     self:joystickControls()
+
+    self.sprite = (self.walking) and self.animator:getNextFrame(dt) or self.idle
 end
 
 function Player:render()
     love.graphics.push()
-        love.graphics.draw(sprites['right walk 2.png'], self.collider:getX() - 16, self.collider:getY() - 16)
+        love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
     love.graphics.pop()
-
-    --[[
-    love.graphics.push()
-        love.graphics.rectangle("fill", self.collider:getX() - PLAYER_WIDTH / 2, self.collider:getY() - PLAYER_HEIGHT / 2, PLAYER_WIDTH, PLAYER_HEIGHT)
-        love.graphics.rectangle("line", self.footCollider:getX() - PLAYER_WIDTH / 4, self.footCollider:getY() - 1, PLAYER_WIDTH / 2, 2)
-    love.graphics.pop()
-    --]]
 end
 
 return Player
