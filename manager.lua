@@ -29,6 +29,15 @@ function prototype:getByTag(tag)
     return tagged
 end
 
+function prototype:getByCollider(collider)
+    for _,value in pairs(self.objects) do
+        if value.object.collider == collider then
+            return value
+        end
+    end
+    return nil
+end
+
 function getIndex(table, el)
     for index, value in pairs(table) do
         if value.object == el then
