@@ -23,8 +23,7 @@ end
 function Workshop:isAssigned(joystick)
     players = self.world.manager:getByTag('player')
     for _, player in ipairs(players) do
-        if player.joystick:getID() == 
-            joystick:getID() then
+        if player.joystick:getID() == joystick:getID() then
             return true
         end
     end
