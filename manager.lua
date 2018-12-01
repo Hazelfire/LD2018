@@ -38,3 +38,5 @@ function prototype:renderObjects()
         end
     end
 end
+
+return manager
