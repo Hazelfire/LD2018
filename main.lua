@@ -27,7 +27,7 @@ function love.load()
 
     Item:new(world, 150, 100)
     Enemy:new(world, 300, 100)
-    Workshop:new(world, 800 - 30 - 32, 608 - 32 - 40)
+    Workshop:new(world, 800 - 30 - 32, 608 - 32 - 40, sprites)
 
     Terrain:makeLevel(world, sprites)
 end

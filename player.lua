@@ -35,7 +35,7 @@ function Player:new(world, x, y, joystick, sprites)
     setmetatable(self, Player)
     Player.__index = Player
 
-    world.manager:addObject(self)
+    world.manager:addObject(self, 'player')
 
     return self
 end
@@ -116,7 +116,9 @@ end
 
 function Player:render()
     love.graphics.push()
-        love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
+        if self.sprite then
+            love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
+        end
     love.graphics.pop()
 end
 
