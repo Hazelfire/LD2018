@@ -19,7 +19,7 @@ end
 
 function Item:render()
     love.graphics.push()
-        love.graphics.draw(self.sprite, self.collider:getX() - 8, self.collider:getY() - 8, 0, 0.5, 0.5) 
+        love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16) 
     love.graphics.pop()
 end
 
