@@ -13,6 +13,13 @@ function love.load()
 
     sprites = SpriteLoader:loadSprites()
 
+    enemyParts = {
+        sprites['torso.png'],
+        sprites['treads.png'],
+        sprites['gun.png'],
+        sprites['head.png'],
+    }
+
     world = wf.newWorld(0, 0, true)
     world:addCollisionClass('ground')
     world:addCollisionClass('player', {ignores= {'player'}})
@@ -25,8 +32,8 @@ function love.load()
     manager = Manager:new()
     world.manager = manager
 
-    Item:new(world, 150, 100)
-    Enemy:new(world, 300, 100)
+    Item:new(world, 150, 100, sprites['crate 1.png'])
+    enemy = Enemy:new(world, 300, 100, enemyParts)
     Workshop:new(world, 800 - 30 - 32, 608 - 32 - 40, sprites)
 
     Terrain:makeLevel(world, sprites)
@@ -41,7 +48,12 @@ function love.joystickadded(joystick)
     Player:new(world, 100, 100, joystick, sprites)
 end
 
+function love.keypressed(key)
+    if key == 'q' then
+        enemy:die()
+    end
+end
+
 function love.draw()
     manager:renderObjects()
-    world:draw()
 end
