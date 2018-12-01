@@ -7,6 +7,7 @@ PLAYER_HEIGHT = 28
 PLAYER_WIDTH = 16
 PLAYER_SPEED = 150
 JUMP_SPEED = -600
+THROW_SPEED = 400
 
 function Player:new(world, x, y, joystick, sprites)
     self = {}
@@ -29,6 +30,9 @@ function Player:new(world, x, y, joystick, sprites)
     })
     self.animator:setDelay(0.1)
     self.idle = sprites['right walk 1.png']
+
+    self.lastThrowX = 1
+    self.lastThrowY = 0
 
     self.walking = false
 
@@ -81,17 +85,40 @@ function Player:joystickControls()
     for _, collider in ipairs(colliders) do
         if myJoystick:isGamepadDown("x") then
             if not self.weapon then
-                self.weapon = world:addJoint('WeldJoint', collider, self.collider, collider:getX(), collider:getY(), false)
+                self.weapon = collider
             end
         end
     end
 
-    if myJoystick:isGamepadDown("rightshoulder") then
-        if self.weapon then
-            item,_ = self.weapon:getBodies()
-            item:applyLinearImpulse(0, -150)
-            self.weapon = self.weapon:destroy()        
+    local CARRY_DISTANCE = 40
+    local x = myJoystick:getGamepadAxis("rightx")
+    local y = myJoystick:getGamepadAxis("righty")
+
+    local d = math.sqrt(math.pow(x,2) + math.pow(y, 2))
+
+    local nx, ny
+    if d < 0.1 then
+        x = self.lastThrowX
+        y = self.lastThrowY
+        d = math.sqrt(math.pow(x,2) + math.pow(y, 2))
+    end
+
+    local nx = x / d
+    local ny = y / d
+    self.lastThrowX = x
+    self.lastThrowY = y
+
+    if self.weapon then
+
+        item = self.weapon
+
+
+        if myJoystick:isGamepadDown("rightshoulder") then
+            item:setLinearVelocity(nx * THROW_SPEED, ny * THROW_SPEED)
+            self.weapon = nil
         end
+        item:setPosition(nx * CARRY_DISTANCE + self.collider:getX(), ny *CARRY_DISTANCE + self.collider:getY())
+
     end
 end
 
