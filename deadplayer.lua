@@ -11,6 +11,7 @@ function DeadPlayer:new(world, x, y)
 
     self.collider = world:newRectangleCollider(x, y, PLAYER_WIDTH, PLAYER_HEIGHT)
     self.collider:setCollisionClass('dead')
+    self.collider:setFixedRotation(true)
 
     world.manager:addObject(self)
 
