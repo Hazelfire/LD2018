@@ -14,6 +14,7 @@ function Player:new(world, x, y, joystick)
 
     self.joystick = joystick
     self.world = world
+    self.grounded = false
 
     setmetatable(self, Player)
     Player.__index = Player
@@ -60,6 +61,12 @@ function Player:joystickControls()
     end
 end
 
+function xor(a, b)
+    return not (a == b)
+end
+
+
+
 function Player:update()
     if not self.joystick:isConnected() then
         DeadPlayer:new(self.world, self.collider:getX(), self.collider:getY())
@@ -68,16 +75,37 @@ function Player:update()
         footX, footY = self:getFootPos()
         self.footCollider:setPosition(footX, footY)
 
-        if self.footCollider:exit('ground') then
-            self.grounded = false
+
+        exitGround = self.footCollider:exit('ground')
+        enterGround = self.footCollider:enter('ground')
+        exitDead = self.footCollider:exit('dead')
+        enterDead = self.footCollider:enter('dead')
+
+        if not (exitGround or enterGround or exitDead or enterDead) then
+            self.grounded = self.grounded
+        else
+            if self.grounded then
+                if not (exitGround or enterGround or exitDead or enterDead) then
+                    self.grounded = self.grounded
+                else
+                    print("Something happened")
+                    exitedGround = xor(exitGround, enterGround)
+                    exitedDead = xor(exitDead, enterDead)
+                    if exitedGround or exitedDead then
+                        self.grounded = false
+                    end
+                end
+            else
+                if enterGround or enterDead then
+                    self.grounded = true
+                end
+            end
+        end
+
+        if not self.grounded then
             self.collider:setFriction(0)
         end
-
-        if self.footCollider:enter('ground') then
-            self.grounded = true
-        end
-
-
+        
         self:joystickControls()
     end
 end
