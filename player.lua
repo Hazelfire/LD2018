@@ -77,7 +77,6 @@ end
 function Player:update()
     if self.collider:enter('enemy') then
         self:die()
-        Player:new(self.world, 100, 100, self.joystick)
     else
         if not self.joystick:isConnected() then
             self:die()
