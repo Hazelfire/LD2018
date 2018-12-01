@@ -16,13 +16,15 @@ function Player:new(world, x, y, joystick)
    setmetatable(self, Player)
    Player.__index = Player
 
+   world.manager:addObject(self)
+
    return self
 end
 
 function Player:getFootPos()
   x = self.collider:getX()
   y = self.collider:getY()
-  return x + PLAYER_WIDTH / 4, y + PLAYER_HEIGHT
+  return x, y + PLAYER_HEIGHT / 2
 end
 
 function Player:joystickControls()
@@ -54,9 +56,11 @@ function Player:update()
   self:joystickControls()
 end
 
-function Player:draw()
-  love.graphics.rectangle("fill", self.collider:getX(), self.collider:getY(), PLAYER_WIDTH, PLAYER_HEIGHT)
-  love.graphics.rectangle("line", self.footCollider:getX(), self.footCollider:getY(), PLAYER_WIDTH / 2, 2)
+function Player:render()
+  love.graphics.push()
+    love.graphics.rectangle("fill", self.collider:getX() - PLAYER_WIDTH / 2, self.collider:getY() - PLAYER_HEIGHT / 2, PLAYER_WIDTH, PLAYER_HEIGHT)
+    love.graphics.rectangle("line", self.footCollider:getX() - PLAYER_WIDTH / 4, self.footCollider:getY() - 1, PLAYER_WIDTH / 2, 2)
+  love.graphics.pop()
 end
 
 return Player
