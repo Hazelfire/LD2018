@@ -1,11 +1,13 @@
+Item = require 'items'
+
 local Enemy = {}
 
-local ENEMY_WIDTH = 20
-local ENEMY_HEIGHT = 20
+local ENEMY_WIDTH = 18
+local ENEMY_HEIGHT = 23
 local ENEMY_SPEED = 100
 local JUMP_SPEED = -400
 
-function Enemy:new(world, x, y)
+function Enemy:new(world, x, y, parts)
     self = {}
 
     setmetatable(self, Enemy)
@@ -21,10 +23,24 @@ function Enemy:new(world, x, y)
     self.footCollider:setFixedRotation(true)
 
     self.grounded = false
+    self.world = world
+    
+    self.parts = {}
+
+    for i, part in ipairs(parts) do
+        self.parts[i] = part
+    end
 
     world.manager:addObject(self)
 
     return self
+end
+
+function Enemy:die()
+    for _, part in pairs(self.parts) do
+        Item:new(self.world, self.collider:getX(), self.collider:getY(), part) end
+
+    self.collider:destroy()
 end
 
 function Enemy:getFootPos()
@@ -88,9 +104,9 @@ end
 
 function Enemy:render()
     love.graphics.push()
-        love.graphics.setColor(1, 1, 0)
-        love.graphics.rectangle("fill", self.collider:getX() - ENEMY_WIDTH / 2, self.collider:getY() - PLAYER_HEIGHT / 2, PLAYER_WIDTH, PLAYER_HEIGHT)
-        love.graphics.setColor(1, 1, 1)
+        for _, part in pairs(self.parts) do
+            love.graphics.draw(part, self.collider:getX() - 16, self.collider:getY() - 16)
+        end
     love.graphics.pop()
 end
 

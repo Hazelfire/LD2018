@@ -158,7 +158,7 @@ end
 
 function Player:render()
     love.graphics.push()
-        if self.sprite then
+        if self.sprite and not self.collider:isDestroyed() then
             love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
         end
     love.graphics.pop()
