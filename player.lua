@@ -1,4 +1,5 @@
 Animator = require 'animator'
+DeadPlayer = require 'deadplayer'
 
 Player = {}
 
@@ -11,11 +12,15 @@ function Player:new(world, x, y, joystick, sprites)
     self = {}
     self.collider = world:newRectangleCollider(x, y, PLAYER_WIDTH, PLAYER_HEIGHT)
     self.collider:setCollisionClass('player')
-    self.collider:setFixedRotation(true)
-    self.footCollider = world:newRectangleCollider(x + PLAYER_WIDTH / 4, y + PLAYER_HEIGHT, PLAYER_WIDTH / 2, 2)
-    self.footCollider:setFixedRotation(true)
 
     self.joystick = joystick
+    self.world = world
+    self.grounded = false
+
+    self.collider:setFixedRotation(true)
+    self.footCollider = world:newRectangleCollider(x + PLAYER_WIDTH / 4, y + PLAYER_HEIGHT, PLAYER_WIDTH / 2, 2)
+    self.footCollider:setCollisionClass('foot')
+    self.footCollider:setFixedRotation(true)
 
     self.animator = Animator:new()
     self.animator:setFrames({
@@ -42,6 +47,7 @@ function Player:getFootPos()
 end
 
 function Player:joystickControls()
+    local world = self.world
     local myJoystick = self.joystick
     x, y = self.collider:getLinearVelocity()
     local speed = myJoystick:getGamepadAxis("leftx") * PLAYER_SPEED
@@ -56,22 +62,48 @@ function Player:joystickControls()
 
     self.walking = (speed ~= 0) and true or false
     self.animator:setDelay(0.5 - (math.abs(speed) / 150 * 0.5) + 0.1)
+
+    local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30)
+    for _, collider in ipairs(colliders) do
+        if collider.collision_class == 'dead' then
+            if myJoystick:isGamepadDown("x") then
+                if not self.carry then
+                    self.carry = world:addJoint('RopeJoint', collider, self.collider, collider:getX(), collider:getY(), self.collider:getX(), self.collider:getY(), 30, false)
+                end
+            end
+        end
+    end
+    if not myJoystick:isGamepadDown("x") then
+        if self.carry then
+            self.carry = self.carry:destroy()
+        end
+    end
 end
 
+function xor(a, b)
+    return not (a == b)
+end
+
+
+
 function Player:update(dt)
-    footX, footY = self:getFootPos()
-    self.footCollider:setPosition(footX, footY)
+    if not self.joystick:isConnected() then
+        DeadPlayer:new(self.world, self.collider:getX(), self.collider:getY())
+        self:delete()
+    else
+        footX, footY = self:getFootPos()
+        self.footCollider:setPosition(footX, footY)
 
-    if self.footCollider:exit('ground') then
-        self.grounded = false
-        self.collider:setFriction(0)
+        exitGround = self.footCollider:exit('ground')
+        enterGround = self.footCollider:enter('ground')
+        self.grounded = xor(self.grounded, xor(enterGround, exitGround))
+
+        if not self.grounded then
+            self.collider:setFriction(0)
+        end
+        
+        self:joystickControls()
     end
-
-    if self.footCollider:enter('ground') then
-        self.grounded = true
-    end
-
-    self:joystickControls()
 
     self.sprite = (self.walking) and self.animator:getNextFrame(dt) or self.idle
 end
@@ -80,6 +112,12 @@ function Player:render()
     love.graphics.push()
         love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
     love.graphics.pop()
+end
+
+function Player:delete()
+    self.world.manager:removeObject(self)
+    self.collider:destroy()
+    self.footCollider:destroy()
 end
 
 return Player
