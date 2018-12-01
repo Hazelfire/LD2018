@@ -3,6 +3,7 @@ Player = require 'player'
 Manager = require 'manager'
 Terrain = require 'terrain'
 Wall = require 'wall'
+Item = require 'items'
 
 function love.load()
     love.window.setMode(800, 600)
@@ -10,10 +11,13 @@ function love.load()
     world = wf.newWorld(0, 0, true)
     world:addCollisionClass('ground')
     world:addCollisionClass('player', {ignores= {'player'}})
+    world:addCollisionClass('item', {ignores={'player'}})
     world:setGravity(0, 1024)
 
     manager = Manager:new()
     world.manager = manager
+
+    Item:new(world, 150, 100)
 
     Terrain:makeBoundary(world)
 end
