@@ -35,7 +35,7 @@ function Player:new(world, x, y, joystick, sprites)
     setmetatable(self, Player)
     Player.__index = Player
 
-    world.manager:addObject(self)
+    world.manager:addObject(self, 'player')
 
     return self
 end
@@ -63,17 +63,15 @@ function Player:joystickControls()
     self.walking = (speed ~= 0) and true or false
     self.animator:setDelay(0.5 - (math.abs(speed) / 150 * 0.5) + 0.1)
 
-    local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30)
+    local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30, {'dead'})
     for _, collider in ipairs(colliders) do
-        if collider.collision_class == 'dead' then
-            if myJoystick:isGamepadDown("x") then
-                if not self.carry then
-                    self.carry = world:addJoint('RopeJoint', collider, self.collider, collider:getX(), collider:getY(), self.collider:getX(), self.collider:getY(), 30, false)
-                end
+        if myJoystick:isGamepadDown("leftshoulder") then
+            if not self.carry then
+                self.carry = world:addJoint('RopeJoint', collider, self.collider, collider:getX(), collider:getY(), self.collider:getX(), self.collider:getY(), 30, false)
             end
         end
     end
-    if not myJoystick:isGamepadDown("x") then
+    if not myJoystick:isGamepadDown("leftshoulder") then
         if self.carry then
             self.carry = self.carry:destroy()
         end
@@ -92,7 +90,6 @@ end
 function Player:update(dt)
     if self.collider:enter('enemy') then
         self:die()
-        Player:new(self.world, 100, 100, self.joystick, sprites)
     else
         if not self.joystick:isConnected() then
             self:die()
@@ -117,7 +114,9 @@ end
 
 function Player:render()
     love.graphics.push()
-        love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
+        if self.sprite then
+            love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
+        end
     love.graphics.pop()
 end
 

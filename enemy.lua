@@ -2,8 +2,8 @@ local Enemy = {}
 
 local ENEMY_WIDTH = 20
 local ENEMY_HEIGHT = 20
-local ENEMY_SPEED = 120
-local JUMP_SPEED = -600
+local ENEMY_SPEED = 100
+local JUMP_SPEED = -400
 
 function Enemy:new(world, x, y)
     self = {}
@@ -80,6 +80,9 @@ function Enemy:update()
         if not self.grounded then
             self.collider:setFriction(0)
         end
+    else
+        x, y = self.collider:getLinearVelocity()
+        self.collider:setLinearVelocity(0, y)
     end
 end
 

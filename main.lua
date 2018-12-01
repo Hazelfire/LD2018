@@ -6,6 +6,7 @@ Terrain = require 'terrain'
 Wall = require 'wall'
 Item = require 'items'
 Enemy = require 'enemy'
+Workshop = require 'workshop'
 
 function love.load()
     love.window.setMode(800, 608)
@@ -26,6 +27,7 @@ function love.load()
 
     Item:new(world, 150, 100)
     Enemy:new(world, 300, 100)
+    Workshop:new(world, 800 - 30 - 32, 608 - 32 - 40, sprites)
 
     Terrain:makeLevel(world, sprites)
 end
