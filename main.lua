@@ -5,6 +5,7 @@ Manager = require 'manager'
 Terrain = require 'terrain'
 Wall = require 'wall'
 Item = require 'items'
+Enemy = require 'enemy'
 
 function love.load()
     love.window.setMode(800, 608)
@@ -14,15 +15,17 @@ function love.load()
     world = wf.newWorld(0, 0, true)
     world:addCollisionClass('ground')
     world:addCollisionClass('player', {ignores= {'player'}})
-    world:addCollisionClass('item', {ignores={'player'}})
-    world:addCollisionClass('dead', {ignores={'player'}})
-    world:addCollisionClass('foot', {ignores={'player', 'dead','item'}})
+    world:addCollisionClass('enemy')
+    world:addCollisionClass('item', {ignores={'player', 'enemy'}})
+    world:addCollisionClass('dead', {ignores={'player', 'enemy'}})
+    world:addCollisionClass('foot', {ignores={'player', 'dead','enemy', 'item'}})
     world:setGravity(0, 1024)
 
     manager = Manager:new()
     world.manager = manager
 
     Item:new(world, 150, 100)
+    Enemy:new(world, 300, 100)
 
     Terrain:makeLevel(world, sprites)
 end

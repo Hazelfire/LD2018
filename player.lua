@@ -4,7 +4,7 @@ Player = {}
 PLAYER_HEIGHT = 28
 PLAYER_WIDTH = 16
 PLAYER_SPEED = 150
-JUMP_SPEED = -400
+JUMP_SPEED = -600
 
 function Player:new(world, x, y, joystick)
     self = {}
@@ -69,28 +69,34 @@ function xor(a, b)
     return not (a == b)
 end
 
-
+function Player:die()
+    DeadPlayer:new(self.world, self.collider:getX(), self.collider:getY())
+    self:delete()
+end
 
 function Player:update()
-    if not self.joystick:isConnected() then
-        DeadPlayer:new(self.world, self.collider:getX(), self.collider:getY())
-        self:delete()
+    if self.collider:enter('enemy') then
+        self:die()
+        Player:new(self.world, 100, 100, self.joystick)
     else
-        footX, footY = self:getFootPos()
-        self.footCollider:setPosition(footX, footY)
+        if not self.joystick:isConnected() then
+            self:die()
+        else
+            footX, footY = self:getFootPos()
+            self.footCollider:setPosition(footX, footY)
 
 
-        exitGround = self.footCollider:exit('ground')
-        enterGround = self.footCollider:enter('ground')
-        self.grounded = xor(self.grounded, xor(enterGround, exitGround))
+            exitGround = self.footCollider:exit('ground')
+            enterGround = self.footCollider:enter('ground')
+            self.grounded = xor(self.grounded, xor(enterGround, exitGround))
 
-        if not self.grounded then
-            self.collider:setFriction(0)
+            if not self.grounded then
+                self.collider:setFriction(0)
+            end
+            
+            self:joystickControls()
         end
-        
-        self:joystickControls()
     end
-
 end
 
 function Player:render()
