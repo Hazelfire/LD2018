@@ -4,7 +4,7 @@ Player = require 'player'
 Manager = require 'manager'
 Terrain = require 'terrain'
 Wall = require 'wall'
-Item = require 'items'
+Crate = require 'items/crate'
 Enemy = require 'enemy'
 Workshop = require 'workshop'
 
@@ -33,7 +33,7 @@ function love.load()
     manager = Manager:new()
     world.manager = manager
 
-    Item:new(world, 150, 100, sprites['crate 1.png'])
+    Crate:new(world, 150, 100, sprites)
     enemy = Enemy:new(world, 300, 100, enemyParts)
     Workshop:new(world, 800 - 30 - 32, 608 - 32 - 40, sprites)
 
@@ -57,4 +57,5 @@ end
 
 function love.draw()
     manager:renderObjects()
+    world:draw()
 end

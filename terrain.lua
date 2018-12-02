@@ -12,10 +12,10 @@ local PLATFORM_VARIANCE = 2
 function P:makeLevel(world, sprites)
     P:makeBoundary(world, sprites['platform_support.png'])
 
-    for x=1,24 do
-        for y=1,17 do
+    for x=1,22 do
+        for y=1,15 do
             if math.random() < 0.2 / PLATFORM_WIDTH then
-                width = math.floor(math.random() * PLATFORM_VARIANCE * 2 + (PLATFORM_WIDTH - PLATFORM_VARIANCE))
+                width = math.min(math.floor(math.random() * PLATFORM_VARIANCE * 2 + (PLATFORM_WIDTH - PLATFORM_VARIANCE)), 23 - x)
                 P:makePlatform(x, y, width, 1, world, sprites['platform.png'])
             end
         end

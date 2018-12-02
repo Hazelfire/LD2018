@@ -83,7 +83,7 @@ function Player:joystickControls()
 
     local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30, {'item'})
     for _, collider in ipairs(colliders) do
-        if myJoystick:isGamepadDown("x") then
+        if myJoystick:isGamepadDown("b") then
             if not self.weapon then
                 self.weapon = collider
             end
@@ -113,12 +113,22 @@ function Player:joystickControls()
         item = self.weapon
 
 
+        destroyed = false
         if myJoystick:isGamepadDown("rightshoulder") then
             item:setLinearVelocity(nx * THROW_SPEED, ny * THROW_SPEED)
             self.weapon = nil
+        elseif myJoystick:isGamepadDown("x") then
+            object = self.weapon:getObject()
+            if object:use() then
+                self.weapon = nil
+                destroyed = true
+            end
         end
-        item:setPosition(nx * CARRY_DISTANCE + self.collider:getX(), ny *CARRY_DISTANCE + self.collider:getY())
 
+        if not destroyed then
+            item:setPosition(nx * CARRY_DISTANCE + self.collider:getX(), ny *CARRY_DISTANCE + self.collider:getY())
+            item:setAngle(math.atan2(ny, nx))
+        end
     end
 end
 
@@ -143,12 +153,18 @@ function Player:update(dt)
 
             exitGround = self.footCollider:exit('ground')
             enterGround = self.footCollider:enter('ground')
-            self.grounded = xor(self.grounded, xor(enterGround, exitGround))
+            if enterGround and not exitGround then
+                self.grounded = true
+            elseif exitGround and not enterGround then
+                self.grounded = false
+            else
+                self.grounded = self.grounded
+            end
 
             if not self.grounded then
                 self.collider:setFriction(0)
             end
-            
+
             self:joystickControls()
         end
     end
@@ -158,9 +174,9 @@ end
 
 function Player:render()
     love.graphics.push()
-        if self.sprite and not self.collider:isDestroyed() then
-            love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
-        end
+    if self.sprite and not self.collider:isDestroyed() then
+        love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
+    end
     love.graphics.pop()
 end
 
