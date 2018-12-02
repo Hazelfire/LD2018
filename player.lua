@@ -157,8 +157,6 @@ function Player:update(dt)
                 self.grounded = true
             elseif exitGround and not enterGround then
                 self.grounded = false
-            else
-                self.grounded = self.grounded
             end
 
             if not self.grounded then

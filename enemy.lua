@@ -75,7 +75,11 @@ function Enemy:update()
     if closest then
         exitGround = self.footCollider:exit('ground')
         enterGround = self.footCollider:enter('ground')
-        self.grounded = xor(self.grounded, xor(enterGround, exitGround))
+        if enterGround and not exitGround then
+            self.grounded = true
+        elseif exitGround and not enterGround then
+            self.grounded = false
+        end
 
         vx, vy = self.collider:getLinearVelocity()
 

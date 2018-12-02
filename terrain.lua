@@ -6,7 +6,7 @@ terrain = P
 
 local WALL_WIDTH = 32
 
-local DENSITY = 0.2
+local DENSITY = 0.4
 local PLATFORM_WIDTH = 5
 local PLATFORM_VARIANCE = 2
 
