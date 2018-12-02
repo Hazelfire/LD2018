@@ -34,6 +34,7 @@ function Player:new(world, x, y, joystick, sprites)
     })
     self.animator:setDelay(0.1)
     self.idle = sprites['right walk 1.png']
+    self.headlight = sprites['head-light.png']
 
     self.lastThrowX = 1
     self.lastThrowY = 0
@@ -145,6 +146,7 @@ function Player:render()
     love.graphics.push()
     if self.sprite and not self.collider:isDestroyed() then
         love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
+        love.graphics.draw(self.headlight, self.collider:getX() - 16, self.collider:getY() - 16)
     end
     love.graphics.pop()
 end
