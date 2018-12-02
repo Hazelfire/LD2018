@@ -7,6 +7,10 @@ local function distance(x1, y1, x2, y2)
     return math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2))    
 end
 
+local function xor(a, b)
+    return not (a == b)
+end
+
 local function update(self, player, dt)
     local closest = nil
     local colliders = world:queryCircleArea(player.collider:getX(), player.collider:getY(), 500)

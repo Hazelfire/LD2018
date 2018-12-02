@@ -10,6 +10,7 @@ Workshop = require 'workshop'
 
 Feet = require 'parts/feet'
 EnemyHead = require 'parts/enemyHead'
+PlayerHead = require 'parts/playerHead'
 
 function love.load()
     love.window.setMode(800, 608)
@@ -25,6 +26,19 @@ function love.load()
             sprite = sprites['gun.png'],
         },
         feet = Feet:new(world, sprites['treads.png'], 100, 400),
+    }
+
+    playerParts = {
+        head = PlayerHead:new(world, sprites['head.png']),
+        torso = {
+            sprite = sprites['torso.png'],
+        },
+        gun = {
+            sprite = sprites['gun.png'],
+        },
+        feet = {
+            sprite = sprites['treads.png'],  
+        },
     }
 
     world = wf.newWorld(0, 0, true)
@@ -52,7 +66,7 @@ function love.update(dt)
 end
 
 function love.joystickadded(joystick)
-    Player:new(world, 100, 100, joystick, sprites)
+    Player:new(world, 100, 100, joystick, playerParts)
 end
 
 function love.keypressed(key)
