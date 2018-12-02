@@ -1,3 +1,4 @@
+Bullet = require 'bullet'
 local Gun = {}
 
 GUN_IMG_HEIGHT = 32
@@ -16,6 +17,7 @@ function Gun:new(world, x, y, sprites)
     self.collider:setObject(self)
 
     self.sprites = sprites
+    self.world = world
 
     setmetatable(self, Gun)
     Gun.__index = Gun
@@ -24,7 +26,7 @@ function Gun:new(world, x, y, sprites)
 end
 
 function Gun:use()
-
+    Bullet:new(self.world,self.collider:getX(), self.collider:getY(), self.collider:getAngle(), sprites)
     return false
 end
 

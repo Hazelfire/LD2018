@@ -117,7 +117,7 @@ function Player:joystickControls()
         if myJoystick:isGamepadDown("rightshoulder") then
             item:setLinearVelocity(nx * THROW_SPEED, ny * THROW_SPEED)
             self.weapon = nil
-        elseif myJoystick:isGamepadDown("x") then
+        elseif myJoystick:getGamepadAxis("triggerright") > 0.5 then
             object = self.weapon:getObject()
             if object:use() then
                 self.weapon = nil

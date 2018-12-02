@@ -28,6 +28,7 @@ function love.load()
     world:addCollisionClass('item', {ignores={'player', 'enemy'}})
     world:addCollisionClass('dead', {ignores={'player', 'enemy'}})
     world:addCollisionClass('foot', {ignores={'player', 'dead','enemy', 'item'}})
+    world:addCollisionClass('bullet', {ignores={'player'}})
     world:setGravity(0, 1024)
 
     manager = Manager:new()
