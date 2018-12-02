@@ -29,7 +29,7 @@ function prototype:render()
     love.graphics.push()
         self.sprite:setWrap('repeat', 'repeat')
         quad = love.graphics.newQuad(0, 0, self.w, self.h, self.sprite:getWidth(), self.sprite:getHeight())
-        love.graphics.draw(self.sprite, quad, self.x, self.y)
+        love.graphics.draw(self.sprite, quad, self.x, self.y, 0)
     love.graphics.pop()
 end
 

@@ -8,8 +8,16 @@ Crate = require 'items/crate'
 Enemy = require 'enemy'
 Workshop = require 'workshop'
 
+local TILE_SIZE = 32
+
+local LEVEL_WIDTH = 25
+local LEVEL_HEIGHT = 15
+
 function love.load()
     love.window.setMode(800, 608)
+    love.window.setFullscreen(true)
+    width, height = love.window.getDesktopDimensions()
+    scale = math.min(width / (LEVEL_WIDTH + 1) / TILE_SIZE, height / (LEVEL_HEIGHT + 1 )/ TILE_SIZE)
 
     sprites = SpriteLoader:loadSprites()
     math.randomseed(os.time())
@@ -37,7 +45,7 @@ function love.load()
 
     Crate:new(world, 150, 100, sprites)
 
-    Terrain:makeLevel(world, sprites)
+    Terrain:makeLevel(world, LEVEL_WIDTH, LEVEL_HEIGHT ,sprites)
 
     Workshop:new(world, 800 - 30 - 32, 608 - 32 - 40, sprites)
 
@@ -62,5 +70,12 @@ function love.keypressed(key)
 end
 
 function love.draw()
+    local width, height = love.window.getDesktopDimensions()
+    local differencex = width - scale * LEVEL_WIDTH * TILE_SIZE
+    local differencey = height - scale * LEVEL_HEIGHT * TILE_SIZE
+    love.graphics.translate(differencex / 2, differencey / 2)
+
+    love.graphics.scale(scale)
     manager:renderObjects()
+    world:draw()
 end
