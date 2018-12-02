@@ -21,6 +21,14 @@ function Crate:new(world, x, y, sprites)
     world.manager:addObject(self)
 end
 
+function Crate:update()
+    if self.collider:enter('weapon') then
+        if self.collider:getEnterCollisionData('weapon').collider:getObject():active() then
+            self:use()
+        end
+    end
+end
+
 function Crate:use()
     
     Gun:new(self.world, self.collider:getX(), self.collider:getY(), self.sprites)

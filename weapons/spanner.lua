@@ -18,13 +18,24 @@ function Spanner:new(world, x, y, sprites)
 
     self.px = x
     self.py = y
+    self.angle = 0
     self.collider = world:newRectangleCollider(x, y, SPANNER_WIDTH, SPANNER_HEIGHT)
     self.collider:setCollisionClass('weapon')
+    self.collider:setObject(self)
+    self.collider:setPreSolve(function(collider1, collider2, contact)
+        if self.animationTime <= 0 then
+            contact:setEnabled(false)
+        end
+    end)
 
     world.manager:addObject(self)
 
     self.animationTime = 0
     return self
+end
+
+function Spanner:active()
+    return self.animationTime > 0
 end
 
 function Spanner:setPosition(x, y)
@@ -82,7 +93,7 @@ end
 
 function Spanner:render()
     love.graphics.push()
-        if not (self.x == nil) and not (self.angle == nil) then
+        if not (self.x == nil) then
             love.graphics.draw(self.sprites['spanner.png'], self.x, self.y, self.angle - SPANNER_ANGLE_OFFSET, 1, 1, SPANNER_WIDTH / 2, SPANNER_HEIGHT / 2) 
         end
     love.graphics.pop()
