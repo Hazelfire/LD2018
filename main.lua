@@ -12,6 +12,7 @@ function love.load()
     love.window.setMode(800, 608)
 
     sprites = SpriteLoader:loadSprites()
+    math.randomseed(os.time())
 
     enemyParts = {
         sprites['torso.png'],
