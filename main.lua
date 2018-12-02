@@ -8,16 +8,23 @@ Item = require 'items'
 Enemy = require 'enemy'
 Workshop = require 'workshop'
 
+Feet = require 'parts/feet'
+EnemyHead = require 'parts/enemyHead'
+
 function love.load()
     love.window.setMode(800, 608)
 
     sprites = SpriteLoader:loadSprites()
 
     enemyParts = {
-        sprites['torso.png'],
-        sprites['treads.png'],
-        sprites['gun.png'],
-        sprites['head.png'],
+        head = EnemyHead:new(world, sprites['head.png']),
+        torso = {
+            sprite = sprites['torso.png'],
+        },
+        gun = {
+            sprite = sprites['gun.png'],
+        },
+        feet = Feet:new(world, sprites['treads.png'], 100, 400),
     }
 
     world = wf.newWorld(0, 0, true)
