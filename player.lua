@@ -1,6 +1,7 @@
 Animator = require 'animator'
 DeadPlayer = require 'deadplayer'
 Spanner = require 'weapons/spanner'
+Gun = require 'weapons/gun'
 
 Player = {}
 
@@ -17,8 +18,8 @@ function Player:new(world, x, y, joystick, sprites)
 
     self.joystick = joystick
     self.world = world
-    self.spanner = Spanner:new(world, x, y, sprites)
-    self.spanner:setAngle(0)
+    self.weapon = Spanner:new(world, x, y, sprites)
+    self.weapon:setAngle(0)
     self.grounded = false
 
     self.collider:setFixedRotation(true)
@@ -73,11 +74,11 @@ function Player:joystickControls()
     local rightx = myJoystick:getGamepadAxis("rightx")
     local righty = myJoystick:getGamepadAxis("righty")
     if math.sqrt(math.pow(rightx, 2) + math.pow(righty, 2)) > 0.1 then
-        self.spanner:setAngle(math.atan2(righty, rightx))
+        self.weapon:setAngle(math.atan2(righty, rightx))
     end
 
     if myJoystick:getGamepadAxis("triggerright") > 0.5 then
-        self.spanner:use()
+        self.weapon:use()
     end
 
     local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30, {'item'})
@@ -112,7 +113,7 @@ end
 function Player:update(dt)
     if self.collider:enter('enemy') then
         self:die()
-        self.spanner:destroy()
+        self.weapon:destroy()
     else
         if not self.joystick:isConnected() then
             self:die()
@@ -135,7 +136,7 @@ function Player:update(dt)
             self:joystickControls()
         end
         self.sprite = (self.walking) and self.animator:getNextFrame(dt) or self.idle
-        self.spanner:setPosition(self.collider:getX(), self.collider:getY())
+        self.weapon:setPosition(self.collider:getX(), self.collider:getY())
     end
 
 end

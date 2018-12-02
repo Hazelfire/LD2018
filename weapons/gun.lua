@@ -1,20 +1,26 @@
-local Spanner = {}
+local Bullet = require 'bullet'
+local Gun = {}
 
-local SPANNER_HEIGHT = 14
-local SPANNER_WIDTH = 14
+local GUN_HEIGHT = 14
+local GUN_WIDTH = 14
 
-local SPANNER_ARC = math.pi / 2
 local COOLDOWN = 0.2
-local SPANNER_REACH = 30
-local SPANNER_ANGLE_OFFSET = - 3 * math.pi / 4
 
-function Spanner:new(world, x, y, sprites)
+GUN_IMG_HEIGHT = 32
+GUN_IMG_WIDTH = 32
+GUN_IMG_X = 11
+GUN_IMG_Y = 14
+
+GUN_HEIGHT = 4
+GUN_WIDTH = 11
+
+function Gun:new(world, x, y, sprites)
     self = {}
 
     self.sprites = sprites
 
-    setmetatable(self, Spanner)
-    Spanner.__index = Spanner
+    setmetatable(self, Gun)
+    Gun.__index = Spanner
 
     self.px = x
     self.py = y
@@ -34,24 +40,24 @@ function Spanner:new(world, x, y, sprites)
     return self
 end
 
-function Spanner:active()
+function Gun:active()
     return self.animationTime > 0
 end
 
-function Spanner:setPosition(x, y)
+function Gun:setPosition(x, y)
     self.px = x
     self.py = y
 end
 
-function Spanner:setAngle(angle)
+function Gun:setAngle(angle)
     self.aim = angle
 end
 
-function Spanner:destroy()
+function Gun:destroy()
     self.collider:destroy()
 end
 
-function Spanner:update(dt)
+function Gun:update(dt)
     if self.animationTime > 0 then
         local changeAngle = (COOLDOWN - self.animationTime) / COOLDOWN * SPANNER_ARC
         local distance = math.sin( math.pi / SPANNER_ARC * changeAngle) * SPANNER_REACH
@@ -78,22 +84,20 @@ function Spanner:update(dt)
     if self.collider:enter('enemy') then
         local info = self.collider:getEnterCollisionData('enemy')
         local enemy = info.collider:getObject()
-        if self.animationTime > 0 then
-            enemy:die()        
-        end
+        enemy:die()        
     end
 
     self.collider:setPosition(self.x, self.y)
     self.collider:setAngle(self.angle)
 end
 
-function Spanner:use()
+function Gun:use()
     if self.animationTime <= 0 then
         self.animationTime = COOLDOWN
     end
 end
 
-function Spanner:render()
+function Gun:render()
     love.graphics.push()
         if not (self.x == nil) then
             love.graphics.draw(self.sprites['spanner.png'], self.x, self.y, self.angle - SPANNER_ANGLE_OFFSET, 1, 1, SPANNER_WIDTH / 2, SPANNER_HEIGHT / 2) 
@@ -102,4 +106,4 @@ function Spanner:render()
 end
 
 
-return Spanner
+return Gun
