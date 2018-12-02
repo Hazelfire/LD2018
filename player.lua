@@ -67,7 +67,7 @@ function Player:joystickControls()
     self.walking = (speed ~= 0) and true or false
     self.animator:setDelay(0.5 - (math.abs(speed) / 150 * 0.5) + 0.1)
 
-    local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30, {'dead'})
+    local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30, {'item'})
     for _, collider in ipairs(colliders) do
         if myJoystick:isGamepadDown("leftshoulder") then
             if not self.carry then
@@ -81,55 +81,6 @@ function Player:joystickControls()
         end
     end
 
-    local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30, {'item'})
-    for _, collider in ipairs(colliders) do
-        if myJoystick:isGamepadDown("b") then
-            if not self.weapon then
-                self.weapon = collider
-            end
-        end
-    end
-
-    local CARRY_DISTANCE = 40
-    local x = myJoystick:getGamepadAxis("rightx")
-    local y = myJoystick:getGamepadAxis("righty")
-
-    local d = math.sqrt(math.pow(x,2) + math.pow(y, 2))
-
-    local nx, ny
-    if d < 0.1 then
-        x = self.lastThrowX
-        y = self.lastThrowY
-        d = math.sqrt(math.pow(x,2) + math.pow(y, 2))
-    end
-
-    local nx = x / d
-    local ny = y / d
-    self.lastThrowX = x
-    self.lastThrowY = y
-
-    if self.weapon then
-
-        item = self.weapon
-
-
-        destroyed = false
-        if myJoystick:isGamepadDown("rightshoulder") then
-            item:setLinearVelocity(nx * THROW_SPEED, ny * THROW_SPEED)
-            self.weapon = nil
-        elseif myJoystick:getGamepadAxis("triggerright") > 0.5 then
-            object = self.weapon:getObject()
-            if object:use() then
-                self.weapon = nil
-                destroyed = true
-            end
-        end
-
-        if not destroyed then
-            item:setPosition(nx * CARRY_DISTANCE + self.collider:getX(), ny *CARRY_DISTANCE + self.collider:getY())
-            item:setAngle(math.atan2(ny, nx))
-        end
-    end
 end
 
 function xor(a, b)
