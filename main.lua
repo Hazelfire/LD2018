@@ -47,7 +47,7 @@ function love.load()
 
     Terrain:makeLevel(world, LEVEL_WIDTH, LEVEL_HEIGHT ,sprites)
 
-    Workshop:new(world, 800 - 30 - 32, 608 - 32 - 40, sprites)
+    Workshop:new(world,(LEVEL_WIDTH - 1) * TILE_SIZE, (LEVEL_HEIGHT - 1.5) * TILE_SIZE, sprites)
 
     time = 0
 end
@@ -77,5 +77,4 @@ function love.draw()
 
     love.graphics.scale(scale)
     manager:renderObjects()
-    world:draw()
 end
