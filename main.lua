@@ -34,10 +34,11 @@ function love.load()
     world.manager = manager
 
     Crate:new(world, 150, 100, sprites)
-    enemy = Enemy:new(world, 300, 100, enemyParts)
-    Workshop:new(world, 800 - 30 - 32, 608 - 32 - 40, sprites)
 
     Terrain:makeLevel(world, sprites)
+
+    enemy = Enemy:new(world, 300, 100, enemyParts)
+    Workshop:new(world, 800 - 30 - 32, 608 - 32 - 40, sprites)
 end
 
 function love.update(dt)
