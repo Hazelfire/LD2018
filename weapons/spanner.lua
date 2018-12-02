@@ -1,7 +1,7 @@
 local Spanner = {}
 
-local SPANNER_HEIGHT = 16
-local SPANNER_WIDTH = 16
+local SPANNER_HEIGHT = 14
+local SPANNER_WIDTH = 14
 
 local SPANNER_ARC = math.pi / 2
 local COOLDOWN = 0.2
@@ -34,6 +34,10 @@ end
 
 function Spanner:setAngle(angle)
     self.aim = angle
+end
+
+function Spanner:destroy()
+    self.collider:destroy()
 end
 
 function Spanner:update(dt)

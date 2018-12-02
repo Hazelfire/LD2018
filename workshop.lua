@@ -44,6 +44,11 @@ function Workshop:update()
             end
         end
     end
+
+    items = self.world:queryRectangleArea(self.x, self.y, WORKSHOP_WIDTH, WORKSHOP_HEIGHT, {'item'})
+    for _, part in ipairs(items) do
+        part:destroy()
+    end
 end
 
 function Workshop:render()

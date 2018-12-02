@@ -39,13 +39,19 @@ function love.load()
 
     Terrain:makeLevel(world, sprites)
 
-    enemy = Enemy:new(world, 300, 100, enemyParts)
     Workshop:new(world, 800 - 30 - 32, 608 - 32 - 40, sprites)
+
+    time = 0
 end
 
 function love.update(dt)
     world:update(dt)
     manager:updateObjects(dt)
+    time = time + dt
+
+    if math.random() < 1 - math.exp(- time / 1000) then
+        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
+    end
 end
 
 function love.joystickadded(joystick)
@@ -53,12 +59,8 @@ function love.joystickadded(joystick)
 end
 
 function love.keypressed(key)
-    if key == 'q' then
-        enemy:die()
-    end
 end
 
 function love.draw()
     manager:renderObjects()
-    world:draw()
 end

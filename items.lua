@@ -18,9 +18,11 @@ function Item:new(world, x, y, sprite)
 end
 
 function Item:render()
-    love.graphics.push()
-        love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16) 
-    love.graphics.pop()
+    if not self.collider:isDestroyed() then
+        love.graphics.push()
+            love.graphics.draw(self.sprite, self.collider:getX() - 16, self.collider:getY() - 16) 
+        love.graphics.pop()
+    end
 end
 
 

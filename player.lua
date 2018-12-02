@@ -88,6 +88,10 @@ function Player:joystickControls()
             end
         end
     end
+
+    if self.carry and self.carry:isDestroyed() then
+        self.carry = nil
+    end
     if not myJoystick:isGamepadDown("leftshoulder") then
         if self.carry then
             self.carry = self.carry:destroy()
@@ -108,6 +112,7 @@ end
 function Player:update(dt)
     if self.collider:enter('enemy') then
         self:die()
+        self.spanner:destroy()
     else
         if not self.joystick:isConnected() then
             self:die()
@@ -129,10 +134,10 @@ function Player:update(dt)
 
             self:joystickControls()
         end
+        self.sprite = (self.walking) and self.animator:getNextFrame(dt) or self.idle
+        self.spanner:setPosition(self.collider:getX(), self.collider:getY())
     end
 
-    self.sprite = (self.walking) and self.animator:getNextFrame(dt) or self.idle
-    self.spanner:setPosition(self.collider:getX(), self.collider:getY())
 end
 
 function Player:render()
