@@ -62,7 +62,7 @@ function love.load()
         weapon = BasicGun:new(world, sprites),
         feet = Treads:new(world, sprites),
     }
-    Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts, sprites)
+    Enemy:new(world, math.random() * 500 + 200 , 100, enemyParts, sprites)
 
     time = 0
     enemyCount = 0

@@ -85,9 +85,6 @@ function Player:joystickControls()
         self.parts.weapon:setAngle(math.atan2(righty, rightx))
     end
 
-    if myJoystick:getGamepadAxis("triggerright") > 0.5 then
-        self.parts.weapon:use()
-    end
 
     local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30, {'item'})
     for _, collider in ipairs(colliders) do
@@ -105,6 +102,10 @@ function Player:joystickControls()
         if self.carry then
             self.carry = self.carry:destroy()
         end
+    end
+
+    if myJoystick:getGamepadAxis("triggerright") > 0.5 then
+        self.parts.weapon:use(self)
     end
 
 end
@@ -145,7 +146,9 @@ function Player:update(dt)
             self:joystickControls()
         end
         --self.sprite = (self.walking) and self.animator:getNextFrame(dt) or self.idle
-        self.parts.weapon:setPosition(self.collider:getX(), self.collider:getY())
+        if not self.collider:isDestroyed() then
+            self.parts.weapon:setPosition(self.collider:getX(), self.collider:getY())
+        end
     end
     if not self.collider:isDestroyed() then
         for _, part in pairs(self.parts) do

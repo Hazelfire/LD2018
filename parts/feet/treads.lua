@@ -2,7 +2,7 @@ local bodyPart = require 'items/bodyPart'
 local Treads = {}
 
 local PLAYER_SPEED = 200
-local PLAYER_ACC = 2
+local PLAYER_ACC = 1
 local JUMP_SPEED = -200
 
 function Treads:new(world, sprites)
