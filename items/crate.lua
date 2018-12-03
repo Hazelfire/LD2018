@@ -27,6 +27,12 @@ function Crate:update()
             self:use()
         end
     end
+
+    if self.collider:enter('bullet') then
+        if self.collider:getEnterCollisionData('bullet').collider:getObject():active() then
+            self:use()
+        end
+    end
 end
 
 function Crate:use()

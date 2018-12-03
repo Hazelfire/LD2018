@@ -1,4 +1,5 @@
 local bodyPart = require 'items/bodyPart'
+local bullet = require 'bullet'
 local BasicGun = {}
 
 local GUN_WIDTH = 11
@@ -16,6 +17,7 @@ function BasicGun:new(world, sprites)
     BasicGun.__index = BasicGun
 
     self.sprite = sprites['gun.png']
+    self.bulletSprite = sprites['bullet.png']
     self.x = 0
     self.y = 0
     self.id = "BasicGun"
@@ -49,10 +51,6 @@ function BasicGun:update(dt)
     end
 end
 
-function BasicGun:use()
-    self.cooldown = COOLDOWN
-end
-
 function BasicGun:toPart(x, y)
     return bodyPart{
         world= world,
@@ -67,4 +65,12 @@ function BasicGun:toPart(x, y)
     }
 
 end
+
+function BasicGun:use()
+    if self.cooldown <= 0 then
+        bullet:new(self.world, self.x, self.y, self.angle, self.bulletSprite, 5)
+        self.cooldown = COOLDOWN
+    end
+end
+
 return BasicGun
