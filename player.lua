@@ -106,7 +106,10 @@ function xor(a, b)
 end
 
 function Player:die()
-    DeadPlayer:new(self.world, self.collider:getX(), self.collider:getY())
+    for _, part in pairs(self.parts) do
+        print("part")
+        part:toPart(self.collider:getX(), self.collider:getY()) 
+    end
     self.collider:destroy()
 end
 

@@ -1,3 +1,4 @@
+local bodyPart = require 'items/bodyPart'
 local Spanner = {}
 
 local SPANNER_HEIGHT = 14
@@ -19,6 +20,7 @@ function Spanner:new(world, sprites)
     self.px = 0
     self.py = 0
     self.angle = 0
+    self.world = world
     self.collider = world:newRectangleCollider(0, 0, SPANNER_WIDTH, SPANNER_HEIGHT)
     self.collider:setCollisionClass('weapon')
     self.collider:setObject(self)
@@ -90,6 +92,21 @@ function Spanner:use()
         self.animationTime = COOLDOWN
     end
 end
+
+function Spanner:toPart(x, y)
+    return bodyPart{
+      world=self.world,
+      x=x,
+      y=y,
+      width= 15,
+      height= 15,
+      ox = 0,
+      oy = 0,
+      sprite = self.sprite,
+      object = self,
+    }
+end
+
 
 function Spanner:render()
     love.graphics.push()
