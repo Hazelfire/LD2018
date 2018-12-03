@@ -9,6 +9,7 @@ function BasicGun:new(world, sprites)
 
     self.sprite = sprites['gun.png']
     self.world = world
+    self.type = 'weapon'
     return self
 end
 

@@ -1,3 +1,4 @@
+local bodyPart = require 'items/bodyPart'
 local Spanner = {}
 
 local SPANNER_HEIGHT = 14
@@ -100,4 +101,26 @@ function Spanner:render()
 end
 
 
-return Spanner
+return {
+  new = function(eee, world, sprites)
+    return {
+      sprite = sprites['spanner.png'],
+      class = Spanner,
+      toPart = function(self, x, y)
+        print(world)
+        return bodyPart{
+          world=world,
+          x=x,
+          y=y,
+          width= 15,
+          height= 15,
+          ox = 0,
+          oy = 0,
+          sprite = self.sprite,
+          object = self,
+        }
+      end,
+      type = 'weapon'
+    }
+  end
+}

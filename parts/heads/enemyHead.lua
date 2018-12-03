@@ -59,6 +59,7 @@ function P:new(world, sprites)
 
     self.sprite = sprites['head.png']
     self.world = world
+    self.type = 'head'
     return self
 end
 

@@ -12,7 +12,13 @@ function Workshop:new(world, x, y, sprites)
 
     self.x = x
     self.y = y
+    self.canSpawn = false
+    self.hasHead = false
+    self.hasTorso = false
+    self.hasWeapon = false
+    self.hasFeet = false
     self.sprites = sprites
+    self.savedParts = {}
 
     world.manager:addObject(self)
     self.world = world
@@ -47,17 +53,51 @@ function Workshop:update()
 
     items = self.world:queryRectangleArea(self.x, self.y, WORKSHOP_WIDTH, WORKSHOP_HEIGHT, {'item'})
     for _, part in ipairs(items) do
+        table.insert(self.savedParts, part:getObject())
+        self.canSpawn = self:determineCanSpawn()        
         part:destroy()
     end
 end
 
+function Workshop:determineCanSpawn()
+  for _, part in ipairs(self.savedParts) do
+    if part.type == 'head' then
+      self.hasHead = true
+    end
+    if part.type == 'torso' then
+      self.hasTorso = true
+    end
+    if part.type == 'weapon' then
+      self.hasWeapon = true
+    end
+    if part.type == 'feet' then
+      self.hasFeet = true
+    end
+  end
+
+  return self.hasHead and self.hasTorso and self.hasWeapon and self.hasFeet
+end
+
 function Workshop:render()
     love.graphics.push()
-        love.graphics.setColor(0, 0, 1)
-        love.graphics.rectangle("fill", self.x, self.y, WORKSHOP_WIDTH, WORKSHOP_HEIGHT)
-        love.graphics.setColor(1, 1, 1)
+        love.graphics.draw(self.sprites["workshop-base.png"], self.x, self.y)
 
-        if self.body then
+        if self.hasHead then
+            love.graphics.draw(self.sprites["workshop-head.png"], self.x, self.y)
+        end
+
+        if self.hasTorso then
+            love.graphics.draw(self.sprites["workshop-torso.png"], self.x, self.y)
+        end
+        if self.hasWeapon then
+            love.graphics.draw(self.sprites["workshop-weapon.png"], self.x, self.y)
+        end
+        if self.hasFeet then
+            love.graphics.draw(self.sprites["workshop-feet.png"], self.x, self.y)
+        end
+
+        if self.canSpawn then
+            love.graphics.draw(self.sprites["workshop-ready.png"], self.x, self.y)
             love.graphics.print("Press start to spawn", 100, 100)
         end
     love.graphics.pop()

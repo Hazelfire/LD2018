@@ -1,4 +1,4 @@
-Gun = require 'items/gun'
+BasicGun = require 'parts/weapons/basicgun'
 
 local Crate = {}
 
@@ -31,7 +31,7 @@ end
 
 function Crate:use()
     
-    Gun:new(self.world, self.collider:getX(), self.collider:getY(), self.sprites)
+    BasicGun:new(self.world, self.sprites):toPart(self.collider:getX(), self.collider:getY())
 
     self.collider:destroy()
 
