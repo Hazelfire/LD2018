@@ -5,12 +5,13 @@ local Crate = {}
 CRATE_HEIGHT = 32
 CRATE_WIDTH = 32
 
-function Crate:new(world, x, y, sprites)
+function Crate:new(world, x, y, sprites, part)
     self = {}
 
     self.collider = world:newRectangleCollider(x, y, CRATE_WIDTH, CRATE_HEIGHT)
     self.collider:setCollisionClass("item")
     self.collider:setObject(self)
+    self.part = part
 
     self.sprites = sprites
 
@@ -37,7 +38,7 @@ end
 
 function Crate:use()
     
-    Bomb:new(self.world, self.sprites, 'player'):toPart(self.collider:getX(), self.collider:getY())
+    self.part:new(self.world, self.sprites, 'player'):toPart(self.collider:getX(), self.collider:getY())
 
     self.collider:destroy()
 

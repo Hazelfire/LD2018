@@ -9,6 +9,8 @@ Enemy = require 'enemy'
 Workshop = require 'workshop'
 
 Spanner = require 'parts/weapons/spanner'
+Bomb = require 'parts/weapons/bomb'
+Spear = require 'parts/weapons/spear'
 BasicGun = require 'parts/weapons/basicgun'
 
 ScrawnyTorso = require 'parts/torsos/scrawny'
@@ -55,7 +57,8 @@ function love.load()
     Terrain:makeLevel(world, LEVEL_WIDTH, LEVEL_HEIGHT ,sprites)
 
     Workshop:new(world,(LEVEL_WIDTH - 1) * TILE_SIZE, (LEVEL_HEIGHT - 1.5) * TILE_SIZE, sprites)
-    Crate:new(world, 150, 100, sprites)
+    Crate:new(world, 150, 100, sprites, Bomb)
+    Crate:new(world, 150, 100, sprites, Spear)
     local enemyParts = {
         head = EnemyHead:new(world, sprites),
         torso = BuffTorso:new(world, sprites),
