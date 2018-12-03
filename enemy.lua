@@ -4,8 +4,6 @@ local Enemy = {}
 
 local ENEMY_WIDTH = 18
 local ENEMY_HEIGHT = 23
-local ENEMY_SPEED = 100
-local ENEMY_ACC_FORCE = 200
 
 function Enemy:new(world, x, y, parts, sprites)
     self = {}
@@ -104,18 +102,14 @@ function Enemy:update()
             self.footCollider:setPosition(footX, footY)
 
             if closest:getX() > self.collider:getX() then
-                if vx < ENEMY_SPEED then
-                    self.collider:applyForce(ENEMY_ACC_FORCE, vy)
-                end
+                self.parts.feet:moveInDirection(self, 1)
             else
-                if vx > -ENEMY_SPEED then
-                    self.collider:applyForce(-ENEMY_ACC_FORCE, vy)
-                end
+                self.parts.feet:moveInDirection(self, -1)
             end
 
-            if self.grounded and self.collider:getY() - closest:getY() > ENEMY_HEIGHT then
+            if self.collider:getY() - closest:getY() > ENEMY_HEIGHT then
+                self.parts.feet:jump(self, self.grounded)
                 x, y = self.collider:getLinearVelocity()
-                self.collider:setLinearVelocity(x, JUMP_SPEED)
             end
 
             if not self.grounded then

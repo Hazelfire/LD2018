@@ -131,7 +131,6 @@ function Workshop:addOption(newPart)
         end
     end
 
-    print("adding " .. newPart.id .. " to " .. partType)
     table.insert(self.options[partType], newPart)
 end
 

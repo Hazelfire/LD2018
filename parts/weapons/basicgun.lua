@@ -18,7 +18,7 @@ function BasicGun:new(world, sprites)
     self.sprite = sprites['gun.png']
     self.x = 0
     self.y = 0
-    id = "BasicGun"
+    self.id = "BasicGun"
     self.angle = 0
     self.world = world
     self.cooldown = 0

@@ -69,14 +69,11 @@ function Player:joystickControls()
     local world = self.world
     local myJoystick = self.joystick
     x, y = self.collider:getLinearVelocity()
-    local speed = myJoystick:getGamepadAxis("leftx") * PLAYER_SPEED
-    self.collider:setLinearVelocity(speed, y)
+    local nx = myJoystick:getGamepadAxis("leftx")
+    self.parts.feet:moveInDirection(self, nx)
 
-    if self.grounded then
-        if myJoystick:isGamepadDown("a") then
-            x, y = self.collider:getLinearVelocity()
-            self.collider:setLinearVelocity(x, JUMP_SPEED)
-        end
+    if myJoystick:isGamepadDown("a") then
+        self.parts.feet:jump(self, self.grounded)
     end
 
     self.walking = (speed ~= 0) and true or false
