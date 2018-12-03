@@ -8,10 +8,23 @@ Crate = require 'items/crate'
 Enemy = require 'enemy'
 Workshop = require 'workshop'
 
+Spanner = require 'parts/weapons/spanner'
+BasicGun = require 'parts/weapons/basicgun'
+
+ScrawnyTorso = require 'parts/torsos/scrawny'
+BuffTorso = require 'parts/torsos/buff'
+
+EnemyHead = require 'parts/heads/enemyHead'
+PlayerHead = require 'parts/heads/playerHead'
+
+Treads = require 'parts/feet/treads'
+ScrawnyLegs = require 'parts/feet/scrawny'
+
 local TILE_SIZE = 32
 
 local LEVEL_WIDTH = 25
 local LEVEL_HEIGHT = 15
+
 
 function love.load()
     love.window.setMode(800, 608)
@@ -22,12 +35,6 @@ function love.load()
     sprites = SpriteLoader:loadSprites()
     math.randomseed(os.time())
 
-    enemyParts = {
-        sprites['torso.png'],
-        sprites['treads.png'],
-        sprites['gun.png'],
-        sprites['head.png'],
-    }
 
     world = wf.newWorld(0, 0, true)
     world:addCollisionClass('ground')
@@ -42,6 +49,20 @@ function love.load()
 
     manager = Manager:new()
     world.manager = manager
+
+    enemyParts = {
+        head = EnemyHead:new(world, sprites),
+        torso = BuffTorso:new(world, sprites),
+        weapon = BasicGun:new(world, sprites),
+        feet = Treads:new(world, sprites),
+    }
+
+    playerParts = {
+        head = PlayerHead:new(world, sprites),
+        torso = ScrawnyTorso:new(world, sprites),
+        weapon = Spanner:new(world, sprites),
+        feet = ScrawnyLegs:new(world,sprites),  
+    }
 
 
     Terrain:makeLevel(world, LEVEL_WIDTH, LEVEL_HEIGHT ,sprites)
@@ -63,7 +84,7 @@ function love.update(dt)
 end
 
 function love.joystickadded(joystick)
-    Player:new(world, 100, 100, joystick, sprites)
+    Player:new(world, 100, 100, joystick, playerParts)
 end
 
 function love.keypressed(key)
