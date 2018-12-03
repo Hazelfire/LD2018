@@ -25,6 +25,7 @@ local TILE_SIZE = 32
 local LEVEL_WIDTH = 25
 local LEVEL_HEIGHT = 15
 
+local SPAWN_CAP = 20
 
 function love.load()
     love.window.setMode(800, 608)
@@ -71,6 +72,7 @@ function love.load()
     Crate:new(world, 150, 100, sprites)
 
     time = 0
+    enemyCount = 0
 end
 
 function love.update(dt)
@@ -79,15 +81,15 @@ function love.update(dt)
     time = time + dt
 
     if math.random() < 1 - math.exp(- time / 1000) then
-        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts, sprites)
+        enemyCount = table.getn(manager:getByTag('enemy'))
+        if enemyCount < SPAWN_CAP then
+            Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
+        end
     end
 end
 
 function love.joystickadded(joystick)
     Player:new(world, 100, 100, joystick, playerParts, sprites)
-end
-
-function love.keypressed(key)
 end
 
 function love.draw()
