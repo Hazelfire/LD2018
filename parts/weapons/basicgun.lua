@@ -56,6 +56,7 @@ return {
     return {
       sprite = sprites['gun.png'],
       class = BasicGun,
+      id = "BasicGun",
       toPart = function(self, x, y)
           return bodyPart{
             world= world,

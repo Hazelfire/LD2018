@@ -10,6 +10,7 @@ function Treads:new(world, sprites)
     self.sprite = sprites['treads.png']
     self.world = world
     self.type = 'feet'
+    self.id="Treads"
     return self
 end
 

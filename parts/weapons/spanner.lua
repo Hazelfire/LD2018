@@ -102,10 +102,11 @@ end
 
 
 return {
-  new = function(eee, world, sprites)
+  new = function(_, world, sprites)
     return {
       sprite = sprites['spanner.png'],
       class = Spanner,
+      id = "Spanner",
       toPart = function(self, x, y)
         return bodyPart{
           world=world,
