@@ -104,6 +104,7 @@ end
 return {
   new = function(eee, world, sprites)
     return {
+      sprite = sprites['spanner.png'],
       class = Spanner,
       toPart = function(self, x, y)
         print(world)
@@ -115,7 +116,7 @@ return {
           height= 15,
           ox = 0,
           oy = 0,
-          sprite = sprites['spanner.png'],
+          sprite = self.sprite,
           object = self,
         }
       end,
