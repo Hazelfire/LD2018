@@ -20,7 +20,6 @@ function Spanner:new(world, sprites)
     self.px = 0
     self.py = 0
     self.angle = 0
-    self.world = world
     self.collider = world:newRectangleCollider(0, 0, SPANNER_WIDTH, SPANNER_HEIGHT)
     self.collider:setCollisionClass('weapon')
     self.collider:setObject(self)
@@ -93,21 +92,6 @@ function Spanner:use()
     end
 end
 
-function Spanner:toPart(x, y)
-    return bodyPart{
-      world=self.world,
-      x=x,
-      y=y,
-      width= 15,
-      height= 15,
-      ox = 0,
-      oy = 0,
-      sprite = self.sprite,
-      object = self,
-    }
-end
-
-
 function Spanner:render()
     love.graphics.push()
         if not (self.x == nil) then
@@ -117,4 +101,25 @@ function Spanner:render()
 end
 
 
-return Spanner
+return {
+  new = function(eee, world, sprites)
+    return {
+      class = Spanner,
+      toPart = function(self, x, y)
+        print(world)
+        return bodyPart{
+          world=world,
+          x=x,
+          y=y,
+          width= 15,
+          height= 15,
+          ox = 0,
+          oy = 0,
+          sprite = sprites['spanner.png'],
+          object = self,
+        }
+      end,
+      type = 'weapon'
+    }
+  end
+}

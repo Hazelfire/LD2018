@@ -9,6 +9,7 @@ function ScrawnyTorso:new(world, sprites)
 
     self.sprite = sprites['scrawny body 1.png']
     self.world = world
+    self.type = 'torso'
     return self
 end
 

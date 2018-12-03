@@ -9,6 +9,7 @@ function ScrawnyLegs:new(world, sprites)
 
     self.sprite = sprites['scrawny legs 1.png']
     self.world = world
+    self.type = 'feet'
     return self
 end
 

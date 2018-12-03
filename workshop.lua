@@ -13,6 +13,7 @@ function Workshop:new(world, x, y, sprites)
     self.x = x
     self.y = y
     self.sprites = sprites
+    self.savedParts = {}
 
     world.manager:addObject(self)
     self.world = world
@@ -47,6 +48,7 @@ function Workshop:update()
 
     items = self.world:queryRectangleArea(self.x, self.y, WORKSHOP_WIDTH, WORKSHOP_HEIGHT, {'item'})
     for _, part in ipairs(items) do
+        table.insert(self.savedParts, part:getObject())
         part:destroy()
     end
 end
@@ -55,6 +57,7 @@ function Workshop:render()
     love.graphics.push()
         love.graphics.setColor(0, 0, 1)
         love.graphics.rectangle("fill", self.x, self.y, WORKSHOP_WIDTH, WORKSHOP_HEIGHT)
+        love.graphics.print(#self.savedParts, self.x, self.y - 40)
         love.graphics.setColor(1, 1, 1)
 
         if self.body then

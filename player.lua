@@ -9,7 +9,7 @@ PLAYER_SPEED = 150
 JUMP_SPEED = -600
 THROW_SPEED = 400
 
-function Player:new(world, x, y, joystick, parts)
+function Player:new(world, x, y, joystick, parts, sprites)
     self = {}
     self.collider = world:newRectangleCollider(x, y, PLAYER_WIDTH, PLAYER_HEIGHT)
     self.collider:setCollisionClass('player')
@@ -17,8 +17,17 @@ function Player:new(world, x, y, joystick, parts)
     self.parts = parts
     self.world = world
     self.joystick = joystick
-    self.parts.weapon:setAngle(0)
     self.grounded = false
+    
+    self.instances = {}
+
+    for partType, part in pairs(parts) do
+      if part.class then
+        self.instances[partType] = part.class:new(world, sprites)
+      end
+    end
+
+    self.instances.weapon:setAngle(0)
 
     self.collider:setFixedRotation(true)
     self.footCollider = world:newRectangleCollider(x + PLAYER_WIDTH / 4, y + PLAYER_HEIGHT, PLAYER_WIDTH / 2, 2)
@@ -74,11 +83,11 @@ function Player:joystickControls()
     local rightx = myJoystick:getGamepadAxis("rightx")
     local righty = myJoystick:getGamepadAxis("righty")
     if math.sqrt(math.pow(rightx, 2) + math.pow(righty, 2)) > 0.1 then
-        self.parts.weapon:setAngle(math.atan2(righty, rightx))
+        self.instances.weapon:setAngle(math.atan2(righty, rightx))
     end
 
     if myJoystick:getGamepadAxis("triggerright") > 0.5 then
-        self.parts.weapon:use()
+        self.instances.weapon:use()
     end
 
     local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30, {'item'})
@@ -107,7 +116,6 @@ end
 
 function Player:die()
     for _, part in pairs(self.parts) do
-        print("part")
         part:toPart(self.collider:getX(), self.collider:getY()) 
     end
     self.collider:destroy()
@@ -116,7 +124,6 @@ end
 function Player:update(dt)
     if self.collider:enter('enemy') then
         self:die()
-        self.parts.weapon:destroy()
     else
         if not self.joystick:isConnected() then
             self:die()
@@ -139,10 +146,10 @@ function Player:update(dt)
             self:joystickControls()
         end
         --self.sprite = (self.walking) and self.animator:getNextFrame(dt) or self.idle
-        self.parts.weapon:setPosition(self.collider:getX(), self.collider:getY())
+        self.instances.weapon:setPosition(self.collider:getX(), self.collider:getY())
     end
     if not self.collider:isDestroyed() then
-        for _, part in pairs(self.parts) do
+        for _, part in pairs(self.instances) do
           if part.update then
             part:update(dt)
           end
@@ -153,9 +160,9 @@ end
 function Player:render()
     love.graphics.push()
     if not self.collider:isDestroyed() then
-        for _, part in pairs(self.parts) do
-            if part.render then
-              part:render()
+        for partType, part in pairs(self.parts) do
+            if self.instances[partType] then
+              self.instances[partType]:render()
             else
               love.graphics.draw(part.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
             end
