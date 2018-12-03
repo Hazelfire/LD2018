@@ -39,7 +39,7 @@ end
 
 function Enemy:die()
     for _, part in pairs(self.parts) do
-        Item:new(self.world, self.collider:getX(), self.collider:getY(), part) end
+        Item:new(self.world, self.collider:getX(), self.collider:getY(), part, 10) end
 
     self.collider:destroy()
 end
