@@ -32,7 +32,7 @@ function Enemy:new(world, x, y, parts)
         self.parts[i] = part
     end
 
-    world.manager:addObject(self)
+    world.manager:addObject(self, 'enemy')
 
     return self
 end

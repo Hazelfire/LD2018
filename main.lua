@@ -13,6 +13,8 @@ local TILE_SIZE = 32
 local LEVEL_WIDTH = 25
 local LEVEL_HEIGHT = 15
 
+local SPAWN_CAP = 20
+
 function love.load()
     love.window.setMode(800, 608)
     love.window.setFullscreen(true)
@@ -50,6 +52,7 @@ function love.load()
     Workshop:new(world,(LEVEL_WIDTH - 1) * TILE_SIZE, (LEVEL_HEIGHT - 1.5) * TILE_SIZE, sprites)
 
     time = 0
+    enemyCount = 0
 end
 
 function love.update(dt)
@@ -58,7 +61,10 @@ function love.update(dt)
     time = time + dt
 
     if math.random() < 1 - math.exp(- time / 1000) then
-        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
+        enemyCount = table.getn(manager:getByTag('enemy'))
+        if enemyCount < SPAWN_CAP then
+            Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
+        end
     end
 end
 
