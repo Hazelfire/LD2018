@@ -37,7 +37,7 @@ end
 function BasicGun:render()
     love.graphics.push()
         if not (self.x == nil) then
-            love.graphics.draw(self.sprite, self.x, self.y, self.angle, 1, 1, GUN_WIDTH / 2, GUN_HEIGHT / 2) 
+            love.graphics.draw(self.sprite, self.x, self.y, self.angle, 1, 1, GUN_WIDTH / 2 + GUN_IMG_X, GUN_HEIGHT / 2 + GUN_IMG_Y) 
         end
     love.graphics.pop()
 end

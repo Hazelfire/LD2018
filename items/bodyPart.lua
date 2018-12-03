@@ -4,7 +4,7 @@ return function(args)
     item.collider:setCollisionClass("item")
     item.collider:setObject(args.object)
     
-    item.lifeTime = args.lifeTime or 10
+    item.lifeTime = args.lifeTime or 180
     item.world = world
 
     item.update = function(self, dt)

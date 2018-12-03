@@ -84,7 +84,7 @@ function love.update(dt)
     if math.random() < 1 - math.exp(- time / 1000) then
         enemyCount = table.getn(manager:getByTag('enemy'))
         if enemyCount < SPAWN_CAP then
-            Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
+    --        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
         end
     end
 end
