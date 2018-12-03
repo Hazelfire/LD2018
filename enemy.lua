@@ -34,7 +34,7 @@ function Enemy:new(world, x, y, parts, sprites)
         self.parts[key] = part
     end
 
-    world.manager:addObject(self)
+    world.manager:addObject(self, 'enemy')
 
     return self
 end

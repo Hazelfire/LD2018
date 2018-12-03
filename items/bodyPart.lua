@@ -3,6 +3,21 @@ return function(args)
     item.collider = args.world:newRectangleCollider(args.x, args.y, args.width, args.height)
     item.collider:setCollisionClass("item")
     item.collider:setObject(args.object)
+    
+    item.lifeTime = args.lifeTime or 10
+    item.world = world
+
+    item.update = function(self, dt)
+        if self.lifeTime > 0 then
+            self.lifeTime = self.lifeTime - dt
+        end
+
+        if self.lifeTime < 0 then
+            self.collider:destroy()
+            self.world.manager:removeObject(self)
+        end
+    end
+
     item.render = function(self)
         if not self.collider:isDestroyed() then
             love.graphics.push()
