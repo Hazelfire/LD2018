@@ -22,29 +22,46 @@ function Workshop:new(world, x, y, sprites)
 
     world.manager:addObject(self)
     self.world = world
+    self.choices = {}
 
     return self
 end
 
-function Workshop:isAssigned(joystick)
-    players = self.world.manager:getByTag('player')
-    for _, player in ipairs(players) do
-        if player.joystick:getID() == joystick:getID() then
+function Workshop:hasHeadFor(joystick)
+    for _, part in ipairs(self.savedParts) do
+        if part.type == 'head' then
+          if part.joystick:getID() == joystick:getID() then
             return true
+          end
         end
     end
+
     return false
 end
 
+function getIndex(table, el)
+    for index, value in pairs(table) do
+        if value.object == el then
+            return index
+        end
+    end
+end
+
+function Workshop:removeParts(parts)
+    for _, part in pairs(parts) do 
+        table.remove(self.savedParts, getIndex(self.savedParts, part))
+    end
+end
+
 function Workshop:update()
-    deadPlayers = self.world:queryRectangleArea(self.x, self.y, WORKSHOP_WIDTH, WORKSHOP_HEIGHT, {'dead'})
-    self.body = deadPlayers[1]
-    if self.body then
+    if self.canSpawn then
         for _, joystick in ipairs(love.joystick.getJoysticks()) do
             if joystick:isGamepadDown("start") then
-                if not self:isAssigned(joystick) then
-                    Player:new(self.world, self.x, self.y, joystick, self.sprites)
-                    self.body = self.body:destroy()
+                if self:hasHeadFor(joystick) then
+                    local parts = self:defaultBody()
+                    self:removeParts(parts)
+                    self.canSpawn = self:determineCanSpawn()        
+                    Player:new(self.world, self.x, self.y, joystick, parts ,self.sprites )
                     break
                 end
             end
@@ -54,12 +71,47 @@ function Workshop:update()
     items = self.world:queryRectangleArea(self.x, self.y, WORKSHOP_WIDTH, WORKSHOP_HEIGHT, {'item'})
     for _, part in ipairs(items) do
         table.insert(self.savedParts, part:getObject())
-        self.canSpawn = self:determineCanSpawn()        
         part:destroy()
+        self.canSpawn = self:determineCanSpawn()        
     end
+
+    --[[local heads = self:getHeads()
+    for i, head in ipairs(heads) do
+      self.choices[heads.joystick:getID()] = self:updateChoices(joystick)
+    end]]--
+end
+
+function Workshop:findWithType(bodyType)
+  for _, part in ipairs(self.savedParts) do
+      if part.type == bodyType then
+        return part
+      end
+  end
+
+  return nil
+end
+
+function Workshop:defaultBody()
+  return {
+    head = self:findWithType('head'),
+    torso = self:findWithType('torso'),
+    weapon = self:findWithType('weapon'),
+    feet = self:findWithType('feet'),
+  }
+end
+
+function Workshop:updateChoices(joystick)
+  local currentChoices = self.choices[joystick:getID()]
+  
+  if not currentChoices then
+  end
 end
 
 function Workshop:determineCanSpawn()
+  self.hasHead = false
+  self.hasTorso = false
+  self.hasWeapon = false
+  self.hasFeet = false
   for _, part in ipairs(self.savedParts) do
     if part.type == 'head' then
       self.hasHead = true
@@ -78,12 +130,22 @@ function Workshop:determineCanSpawn()
   return self.hasHead and self.hasTorso and self.hasWeapon and self.hasFeet
 end
 
+function Workshop:getHeads()
+  local heads = {}
+  for _, part in ipairs(self.savedParts) do
+    table.insert(heads, part)
+  end
+  return heads
+end
+
 function Workshop:render()
     love.graphics.push()
         love.graphics.draw(self.sprites["workshop-base.png"], self.x, self.y)
 
         if self.hasHead then
             love.graphics.draw(self.sprites["workshop-head.png"], self.x, self.y)
+
+            local heads = self:getHeads()
         end
 
         if self.hasTorso then

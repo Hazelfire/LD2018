@@ -70,6 +70,7 @@ function love.load()
 
     Workshop:new(world,(LEVEL_WIDTH - 1) * TILE_SIZE, (LEVEL_HEIGHT - 1.5) * TILE_SIZE, sprites)
     Crate:new(world, 150, 100, sprites)
+    Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts, sprites)
 
     time = 0
     enemyCount = 0
@@ -83,7 +84,7 @@ function love.update(dt)
     if math.random() < 1 - math.exp(- time / 1000) then
         enemyCount = table.getn(manager:getByTag('enemy'))
         if enemyCount < SPAWN_CAP then
-            Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
+    --        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
         end
     end
 
