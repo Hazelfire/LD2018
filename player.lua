@@ -13,21 +13,16 @@ function Player:new(world, x, y, joystick, parts, sprites)
     self = {}
     self.collider = world:newRectangleCollider(x, y, PLAYER_WIDTH, PLAYER_HEIGHT)
     self.collider:setCollisionClass('player')
+    self.collider:setObject(self)
 
     self.parts = parts
     self.world = world
     self.joystick = joystick
     self.grounded = false
     
-    self.instances = {}
+    self.health = self.parts.torso.health
 
-    for partType, part in pairs(parts) do
-      if part.class then
-        self.instances[partType] = part.class:new(world, sprites)
-      end
-    end
-
-    self.instances.weapon:setAngle(0)
+    self.parts.weapon:setAngle(0)
 
     self.collider:setFixedRotation(true)
     self.footCollider = world:newRectangleCollider(x + PLAYER_WIDTH / 4, y + PLAYER_HEIGHT, PLAYER_WIDTH / 2, 2)
@@ -57,6 +52,13 @@ function Player:new(world, x, y, joystick, parts, sprites)
     return self
 end
 
+function Player:damage(amount)
+    self.health = self.health - amount
+    if self.health < 0 then
+        self:die()
+    end
+end
+
 function Player:getFootPos()
     x = self.collider:getX()
     y = self.collider:getY()
@@ -83,11 +85,11 @@ function Player:joystickControls()
     local rightx = myJoystick:getGamepadAxis("rightx")
     local righty = myJoystick:getGamepadAxis("righty")
     if math.sqrt(math.pow(rightx, 2) + math.pow(righty, 2)) > 0.1 then
-        self.instances.weapon:setAngle(math.atan2(righty, rightx))
+        self.parts.weapon:setAngle(math.atan2(righty, rightx))
     end
 
     if myJoystick:getGamepadAxis("triggerright") > 0.5 then
-        self.instances.weapon:use()
+        self.parts.weapon:use()
     end
 
     local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30, {'item'})
@@ -146,10 +148,10 @@ function Player:update(dt)
             self:joystickControls()
         end
         --self.sprite = (self.walking) and self.animator:getNextFrame(dt) or self.idle
-        self.instances.weapon:setPosition(self.collider:getX(), self.collider:getY())
+        self.parts.weapon:setPosition(self.collider:getX(), self.collider:getY())
     end
     if not self.collider:isDestroyed() then
-        for _, part in pairs(self.instances) do
+        for _, part in pairs(self.parts) do
           if part.update then
             part:update(dt)
           end
@@ -161,8 +163,8 @@ function Player:render()
     love.graphics.push()
     if not self.collider:isDestroyed() then
         for partType, part in pairs(self.parts) do
-            if self.instances[partType] then
-              self.instances[partType]:render()
+            if part.render then
+              self.parts[partType]:render()
             else
               love.graphics.draw(part.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
             end

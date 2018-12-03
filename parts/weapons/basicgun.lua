@@ -18,6 +18,7 @@ function BasicGun:new(world, sprites)
     self.sprite = sprites['gun.png']
     self.x = 0
     self.y = 0
+    id = "BasicGun"
     self.angle = 0
     self.world = world
     self.cooldown = 0
@@ -36,41 +37,34 @@ end
 
 function BasicGun:render()
     love.graphics.push()
-        if not (self.x == nil) then
-            love.graphics.draw(self.sprite, self.x, self.y, self.angle, 1, 1, GUN_WIDTH / 2 + GUN_IMG_X, GUN_HEIGHT / 2 + GUN_IMG_Y) 
-        end
+    if not (self.x == nil) then
+        love.graphics.draw(self.sprite, self.x, self.y, self.angle, 1, 1, GUN_WIDTH / 2 + GUN_IMG_X, GUN_HEIGHT / 2 + GUN_IMG_Y) 
+    end
     love.graphics.pop()
 end
 
 function BasicGun:update(dt)
-  if self.cooldown > 0 then
-    self.cooldown = self.cooldown - dt
-  end
+    if self.cooldown > 0 then
+        self.cooldown = self.cooldown - dt
+    end
 end
 
 function BasicGun:use()
-  self.cooldown = COOLDOWN
+    self.cooldown = COOLDOWN
 end
-return {
-  new = function(_, world, sprites)
-    return {
-      sprite = sprites['gun.png'],
-      class = BasicGun,
-      id = "BasicGun",
-      toPart = function(self, x, y)
-          return bodyPart{
-            world= world,
-            x=x,
-            y=y,
-            width= GUN_WIDTH,
-            height= GUN_HEIGHT,
-            ox = GUN_IMG_X,
-            oy = GUN_IMG_Y,
-            sprite = self.sprite,
-            object = self,
-          }
-      end,
-      type = 'weapon'
+
+function BasicGun:toPart(x, y)
+    return bodyPart{
+        world= world,
+        x=x,
+        y=y,
+        width= GUN_WIDTH,
+        height= GUN_HEIGHT,
+        ox = GUN_IMG_X,
+        oy = GUN_IMG_Y,
+        sprite = self.sprite,
+        object = self,
     }
-  end
-}
+
+end
+return BasicGun

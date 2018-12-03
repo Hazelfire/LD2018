@@ -5,6 +5,7 @@ local Enemy = {}
 local ENEMY_WIDTH = 18
 local ENEMY_HEIGHT = 23
 local ENEMY_SPEED = 100
+local ENEMY_ACC_FORCE = 200
 
 function Enemy:new(world, x, y, parts, sprites)
     self = {}
@@ -27,6 +28,8 @@ function Enemy:new(world, x, y, parts, sprites)
     self.world = world
     self.height = ENEMY_HEIGHT
     self.width = ENEMY_WIDTH
+
+    self.health = parts.torso.health
     
     self.parts = {}
 
@@ -37,6 +40,13 @@ function Enemy:new(world, x, y, parts, sprites)
     world.manager:addObject(self, 'enemy')
 
     return self
+end
+
+function Enemy:damage(amount)
+    self.health = self.health - amount
+    if self.health < 0 then
+        self:die()
+    end
 end
 
 function Enemy:die()
@@ -94,9 +104,13 @@ function Enemy:update()
             self.footCollider:setPosition(footX, footY)
 
             if closest:getX() > self.collider:getX() then
-                self.collider:setLinearVelocity(ENEMY_SPEED, vy)
+                if vx < ENEMY_SPEED then
+                    self.collider:applyForce(ENEMY_ACC_FORCE, vy)
+                end
             else
-                self.collider:setLinearVelocity(-ENEMY_SPEED, vy)
+                if vx > -ENEMY_SPEED then
+                    self.collider:applyForce(-ENEMY_ACC_FORCE, vy)
+                end
             end
 
             if self.grounded and self.collider:getY() - closest:getY() > ENEMY_HEIGHT then
