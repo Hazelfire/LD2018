@@ -6,11 +6,12 @@ local ENEMY_WIDTH = 18
 local ENEMY_HEIGHT = 23
 local ENEMY_SPEED = 100
 
-function Enemy:new(world, x, y, parts)
+function Enemy:new(world, x, y, parts, sprites)
     self = {}
 
     setmetatable(self, Enemy)
     Enemy.__index = Enemy
+    self.sprites = sprites
 
     self.collider = world:newRectangleCollider(x, y, ENEMY_WIDTH, ENEMY_HEIGHT)
     self.collider:setCollisionClass('enemy')
@@ -40,7 +41,8 @@ end
 
 function Enemy:die()
     for _, part in pairs(self.parts) do
-        Item:new(self.world, self.collider:getX(), self.collider:getY(), part) end
+        part:toPart(self.collider:getX(), self.collider:getY())
+    end
 
     self.collider:destroy()
 end
@@ -123,11 +125,13 @@ function Enemy:render()
 end
 
 function Enemy:render()
-    love.graphics.push()
-        for _, part in pairs(self.parts) do
-            love.graphics.draw(part.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
-        end
-    love.graphics.pop()
+    if not self.collider:isDestroyed() then
+        love.graphics.push()
+            for _, part in pairs(self.parts) do
+                love.graphics.draw(part.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
+            end
+        love.graphics.pop()
+    end
 end
 
 return Enemy

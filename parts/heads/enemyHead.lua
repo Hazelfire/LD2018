@@ -1,4 +1,4 @@
-
+local bodyPart = require 'items/bodyPart'
 local P = {}
 enemyHead = P
 
@@ -52,8 +52,27 @@ local function update(self, player, dt)
 end
 
 function P:new(world, sprites)
-    return {
-        sprite = sprites['head.png']
+    self = {}
+
+    setmetatable(self, P)
+    P.__index = P
+
+    self.sprite = sprites['head.png']
+    self.world = world
+    return self
+end
+
+function P:toPart(x, y)
+    return bodyPart{
+      world=self.world,
+      x=x,
+      y=y,
+      width= 12,
+      height= 6,
+      ox = 10,
+      oy = 4,
+      sprite = self.sprite,
+      object = self,
     }
 end
 

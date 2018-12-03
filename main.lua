@@ -79,12 +79,12 @@ function love.update(dt)
     time = time + dt
 
     if math.random() < 1 - math.exp(- time / 1000) then
-        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
+        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts, sprites)
     end
 end
 
 function love.joystickadded(joystick)
-    Player:new(world, 100, 100, joystick, playerParts)
+    Player:new(world, 100, 100, joystick, playerParts, sprites)
 end
 
 function love.keypressed(key)

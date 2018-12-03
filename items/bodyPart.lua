@@ -1,6 +1,6 @@
 return function(args)
     item = {}
-    item.collider = world:newRectangeCollider(args.x, args.y, args.width, args.height)
+    item.collider = args.world:newRectangleCollider(args.x, args.y, args.width, args.height)
     item.collider:setCollisionClass("item")
     item.collider:setObject(args.object)
     item.render = function(self)
@@ -10,4 +10,6 @@ return function(args)
             love.graphics.pop()
         end
     end
+
+    args.world.manager:addObject(item)
 end
