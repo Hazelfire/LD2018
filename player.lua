@@ -70,10 +70,6 @@ function Player:joystickControls()
     local speed = myJoystick:getGamepadAxis("leftx") * PLAYER_SPEED
     self.collider:setLinearVelocity(speed, y)
 
-    if myJoystick:isGamepadDown("back") then
-        love.event.quit()
-    end
-
     if self.grounded then
         if myJoystick:isGamepadDown("a") then
             x, y = self.collider:getLinearVelocity()

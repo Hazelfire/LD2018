@@ -86,6 +86,12 @@ function love.update(dt)
             Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
         end
     end
+
+    for _, joystick in pairs(love.joystick.getJoysticks()) do
+        if joystick:isGamepadDown('back') then
+            love.event.quit()
+        end
+    end
 end
 
 function love.joystickadded(joystick)
