@@ -28,7 +28,6 @@ function Player:new(world, x, y, joystick, parts, sprites)
     end
 
     self.instances.weapon:setAngle(0)
-    self.parts.head.joystick = joystick
 
     self.collider:setFixedRotation(true)
     self.footCollider = world:newRectangleCollider(x + PLAYER_WIDTH / 4, y + PLAYER_HEIGHT, PLAYER_WIDTH / 2, 2)

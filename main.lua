@@ -59,7 +59,6 @@ function love.load()
     }
 
     playerParts = {
-        head = PlayerHead:new(world, sprites),
         torso = ScrawnyTorso:new(world, sprites),
         weapon = Spanner:new(world, sprites),
         feet = ScrawnyLegs:new(world,sprites),  
@@ -90,7 +89,14 @@ function love.update(dt)
 end
 
 function love.joystickadded(joystick)
-    Player:new(world, 100, 100, joystick, playerParts, sprites)
+    local thisPlayerParts = {
+        head = PlayerHead:new(world, sprites, joystick),
+        torso = playerParts.torso,
+        weapon = playerParts.weapon,
+        feet = playerParts.feet,  
+    }
+
+    Player:new(world, 100, 100, joystick, thisPlayerParts, sprites)
 end
 
 function love.draw()
