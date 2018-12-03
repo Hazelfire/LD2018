@@ -72,9 +72,6 @@ function love.joystickadded(joystick)
     Player:new(world, 100, 100, joystick, sprites)
 end
 
-function love.keypressed(key)
-end
-
 function love.draw()
     local width, height = love.window.getDesktopDimensions()
     local differencex = width - scale * LEVEL_WIDTH * TILE_SIZE
