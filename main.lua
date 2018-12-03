@@ -69,6 +69,7 @@ function love.load()
 
     Workshop:new(world,(LEVEL_WIDTH - 1) * TILE_SIZE, (LEVEL_HEIGHT - 1.5) * TILE_SIZE, sprites)
     Crate:new(world, 150, 100, sprites)
+    Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts, sprites)
 
     time = 0
 end
@@ -79,7 +80,7 @@ function love.update(dt)
     time = time + dt
 
     if math.random() < 1 - math.exp(- time / 1000) then
-        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts, sprites)
+    --    Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts, sprites)
     end
 end
 

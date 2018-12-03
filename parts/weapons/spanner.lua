@@ -107,7 +107,6 @@ return {
       sprite = sprites['spanner.png'],
       class = Spanner,
       toPart = function(self, x, y)
-        print(world)
         return bodyPart{
           world=world,
           x=x,

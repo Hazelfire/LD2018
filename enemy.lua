@@ -41,7 +41,9 @@ end
 
 function Enemy:die()
     for _, part in pairs(self.parts) do
-        part:toPart(self.collider:getX(), self.collider:getY())
+        if not (part.type == 'head') then
+          part:toPart(self.collider:getX(), self.collider:getY())
+        end
     end
 
     self.collider:destroy()
