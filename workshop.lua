@@ -91,7 +91,7 @@ function Workshop:update()
                     local parts = self:getChosenBody(joystick)
                     self:removeParts(parts)
                     self.canSpawn = self:determineCanSpawn()        
-                    self.updateOptions(self.savedParts)
+                    self:updateOptions(self.savedParts)
                     Player:new(self.world, self.x, self.y, joystick, parts ,self.sprites )
                     break
                 end
