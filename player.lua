@@ -13,7 +13,7 @@ function Player:new(world, x, y, joystick, parts, sprites)
     self = {}
     self.collider = world:newRectangleCollider(x, y, PLAYER_WIDTH, PLAYER_HEIGHT)
     self.collider:setCollisionClass('player')
-
+    
     self.parts = parts
     self.world = world
     self.joystick = joystick
@@ -27,6 +27,7 @@ function Player:new(world, x, y, joystick, parts, sprites)
       end
     end
 
+    self.instances.weapon.attacks = 'enemy'
     self.instances.weapon:setAngle(0)
     self.parts.head.joystick = joystick
 

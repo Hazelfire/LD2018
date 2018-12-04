@@ -28,11 +28,16 @@ function Enemy:new(world, x, y, parts, sprites)
     self.height = ENEMY_HEIGHT
     self.width = ENEMY_WIDTH
     
-    self.parts = {}
+    self.parts = parts 
+    self.instances = {}
 
-    for key, part in pairs(parts) do
-        self.parts[key] = part
+    for partType, part in pairs(parts) do
+      if part.class then
+        self.instances[partType] = part.class:new(world, sprites)
+      end
     end
+
+    self.instances.weapon.attacks = 'player'
 
     world.manager:addObject(self, 'enemy')
 
@@ -59,8 +64,10 @@ function distance(x1, y1, x2, y2)
     return math.sqrt(math.pow(x1 - x2, 2) + math.pow(y1 - y2, 2))    
 end
 
-function Enemy:update()
+function Enemy:update(dt)
     if not self.collider:isDestroyed() then
+        self.instances.weapon:setPosition(self.collider:getX(), self.collider:getY())
+
         local closest = nil
         local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 500)
         for _, collider in ipairs(colliders) do
@@ -80,6 +87,31 @@ function Enemy:update()
         end 
 
         if closest then
+
+            if self.instances.weapon.setAngle then
+                local x, y = self.collider:getPosition()
+                local playerx, playery = closest:getPosition()
+
+                --Aim and fire weapon
+                local dx = playerx - x
+                local dy = playery - y
+                self.instances.weapon:setAngle(math.atan2(dy, dx))
+
+                rayHits = self.world:queryLine(x, y, playerx, playery, {'All', except={'item', 'weapon'}})
+                local closestHit
+                for _, hit in pairs(rayHits) do
+                    if not closestHit then
+                        closestHit = hit
+                    elseif distance(x, y, hit:getX(), hit:getY()) < distance (x, y, closestHit:getX(), closestHit:getY()) then
+                        closestHit = hit
+                    end
+                end
+
+                if closestHit and closestHit.collision_class == 'player' then
+                    self.instances.weapon:use()
+                end
+            end
+
             exitGround = self.footCollider:exit('ground')
             enterGround = self.footCollider:enter('ground')
             if enterGround and not exitGround then
@@ -111,26 +143,24 @@ function Enemy:update()
             x, y = self.collider:getLinearVelocity()
             self.collider:setLinearVelocity(0, y)
         end
+
+        for _, part in pairs(self.instances) do
+          if part.update then
+            part:update(dt)
+          end
+        end
     end
 end
 
 function Enemy:render()
     if not self.collider:isDestroyed() then
         love.graphics.push()
-            for _, part in pairs(self.parts) do
-                love.graphics.draw(part, self.collider:getX() - 16, self.collider:getY() - 16)
-            end
-        love.graphics.pop()
-    end
-    self.parts.head:update(self, dt)
-    self.parts.feet:update(self, dt)
-end
-
-function Enemy:render()
-    if not self.collider:isDestroyed() then
-        love.graphics.push()
-            for _, part in pairs(self.parts) do
-                love.graphics.draw(part.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
+            for partType, part in pairs(self.parts) do
+                if self.instances[partType] then
+                  self.instances[partType]:render()
+                else
+                  love.graphics.draw(part.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
+                end
             end
         love.graphics.pop()
     end

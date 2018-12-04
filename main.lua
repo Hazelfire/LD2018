@@ -48,6 +48,8 @@ function love.load()
     world:addCollisionClass('weapon', {ignores={'ground', 'player'}})
     world:setGravity(0, 1024)
 
+    --world:setQueryDebugDrawing(true)
+
     manager = Manager:new()
     world.manager = manager
 

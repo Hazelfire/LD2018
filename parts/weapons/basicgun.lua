@@ -10,7 +10,7 @@ local GUN_IMG_Y = 14
 
 local COOLDOWN = 0.5
 
-function BasicGun:new(world, sprites)
+function BasicGun:new(world, sprites, attacks)
     self = {}
 
     setmetatable(self, BasicGun)
@@ -23,6 +23,7 @@ function BasicGun:new(world, sprites)
     self.angle = 0
     self.world = world
     self.cooldown = 0
+    self.attacks = attacks
     self.type = 'weapon'
     return self
 end
@@ -52,7 +53,7 @@ end
 
 function BasicGun:use()
     if self.cooldown <= 0 then
-        bullet:new(self.world, self.x, self.y, self.angle, self.bulletSprite, 5)
+        bullet:new(self.world, self.x, self.y, self.angle, self.bulletSprite, 5, self.attacks)
         self.cooldown = COOLDOWN
     end
 end

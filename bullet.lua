@@ -10,8 +10,9 @@ BULLET_WIDTH = 5
 
 BULLET_SPEED = 1000
 LETHAL_SPEED = 500
+BULLET_DAMAGE = 5
 
-function Bullet:new(world, x, y, angle, sprite, lifeTime)
+function Bullet:new(world, x, y, angle, sprite, lifeTime, attacks)
     self = {}
 
     setmetatable(self, Bullet)
@@ -25,6 +26,7 @@ function Bullet:new(world, x, y, angle, sprite, lifeTime)
     self.sprite = sprite
     self.lifeTime = lifeTime
     self.world = world
+    self.attacks = attacks
 
     world.manager:addObject(self)
 
@@ -48,19 +50,21 @@ function Bullet:update(dt)
         self:die()
     end
 
-    if self.collider:enter('enemy') then
+    if self.collider:enter(self.attacks) then
         local speed = self:getSpeed()
         if speed >= LETHAL_SPEED then
-            local info = self.collider:getEnterCollisionData('enemy')
+            local info = self.collider:getEnterCollisionData(self.attacks)
             local enemy = info.collider:getObject()
-            enemy:die()        
+            enemy:damage(5)
         end
     end
 end
 
 function Bullet:render()
     love.graphics.push()
-        love.graphics.draw(self.sprite, self.collider:getX(), self.collider:getY(), self.collider:getAngle(), 1, 1, BULLET_WIDTH / 2 + BULLET_IMG_X, BULLET_HEIGHT / 2 + BULLET_IMG_Y) 
+        if self.collider then
+            love.graphics.draw(self.sprite, self.collider:getX(), self.collider:getY(), self.collider:getAngle(), 1, 1, BULLET_WIDTH / 2 + BULLET_IMG_X, BULLET_HEIGHT / 2 + BULLET_IMG_Y) 
+        end
     love.graphics.pop()
 end
 
