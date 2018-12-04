@@ -50,7 +50,7 @@ function love.load()
     world:addCollisionClass('dead', {ignores={'player', 'enemy'}})
     world:addCollisionClass('foot', {ignores={'player', 'dead','enemy', 'item'}})
     world:addCollisionClass('bullet', {ignores={'player', 'enemy'}})
-    world:addCollisionClass('weapon', {ignores={'ground', 'player'}})
+    world:addCollisionClass('weapon', {ignores={'ground', 'player', 'enemy'}})
     world:setGravity(0, 1024)
 
     --world:setQueryDebugDrawing(true)
@@ -67,12 +67,6 @@ function love.load()
     Crate:new(world, 150, 100, sprites, Quarterstaff)
     Crate:new(world, 150, 100, sprites, Spring)
     Crate:new(world, 150, 100, sprites, Scimitar)
-    local enemyParts = {
-        head = EnemyHead:new(world, sprites),
-        torso = BuffTorso:new(world, sprites),
-        weapon = BasicGun:new(world, sprites),
-        feet = Treads:new(world, sprites),
-    }
 
     time = 0
     enemyCount = 0
@@ -86,10 +80,19 @@ function love.update(dt)
     if math.random() < (1 - math.exp(- time / 50000)) * math.sin(time * 2 * math.pi / 60) then
         enemyCount = table.getn(manager:getByTag('enemy'))
         if enemyCount < SPAWN_CAP then
+            local enemyWeapons = {
+                BasicGun,
+                Bomb,
+                Spear,
+                Spring,
+                Quarterstaff,
+                Scimitar,
+                Spanner,
+            }
             local enemyParts = {
                 head = EnemyHead:new(world, sprites),
                 torso = BuffTorso:new(world, sprites),
-                weapon = BasicGun:new(world, sprites),
+                weapon = enemyWeapons[math.random(#enemyWeapons)]:new(world, sprites),
                 feet = Treads:new(world, sprites),
             }
             Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)

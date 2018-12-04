@@ -109,7 +109,10 @@ function Enemy:update(dt)
                 end
 
                 if closestHit and closestHit.collision_class == 'player' then
-                    self.parts.weapon:use()
+                    self.parts.weapon:use(self)
+                    if self.collider:isDestroyed() then
+                        return
+                    end
                 end
             end
 
@@ -147,7 +150,7 @@ function Enemy:update(dt)
 
         for _, part in pairs(self.parts) do
           if part.update then
-            part:update(dt)
+            part:update(dt, self)
           end
         end
     end

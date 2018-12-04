@@ -42,6 +42,7 @@ return function (args)
         self.px = 0
         self.py = 0
         self.angle = 0
+        self.aim = 0
         self.damage = args.damage
         self.type = 'weapon'
         self.collider = world:newRectangleCollider(0, 0, WEAPON_WIDTH, WEAPON_HEIGHT)
