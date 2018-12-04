@@ -22,14 +22,8 @@ function Player:new(world, x, y, joystick, parts, sprites)
     
     self.health = self.parts.torso.health
 
-    for partType, part in pairs(parts) do
-      if part.class then
-        self.instances[partType] = part.class:new(world, sprites)
-      end
-    end
-
-    self.instances.weapon.attacks = 'enemy'
-    self.instances.weapon:setAngle(0)
+    self.parts.weapon.attacks = 'enemy'
+    self.parts.weapon:setAngle(0)
     self.parts.head.joystick = joystick
 
     self.collider:setFixedRotation(true)
@@ -130,34 +124,31 @@ function Player:die()
 end
 
 function Player:update(dt)
-    if self.collider:enter('enemy') then
+    if not self.joystick:isConnected() then
         self:die()
     else
-        if not self.joystick:isConnected() then
-            self:die()
-        else
-            footX, footY = self:getFootPos()
-            self.footCollider:setPosition(footX, footY)
+        footX, footY = self:getFootPos()
+        self.footCollider:setPosition(footX, footY)
 
-            exitGround = self.footCollider:exit('ground')
-            enterGround = self.footCollider:enter('ground')
-            if enterGround and not exitGround then
-                self.grounded = true
-            elseif exitGround and not enterGround then
-                self.grounded = false
-            end
-
-            if not self.grounded then
-                self.collider:setFriction(0)
-            end
-
-            self:joystickControls()
+        exitGround = self.footCollider:exit('ground')
+        enterGround = self.footCollider:enter('ground')
+        if enterGround and not exitGround then
+            self.grounded = true
+        elseif exitGround and not enterGround then
+            self.grounded = false
         end
-        --self.sprite = (self.walking) and self.animator:getNextFrame(dt) or self.idle
-        if not self.collider:isDestroyed() then
-            self.parts.weapon:setPosition(self.collider:getX(), self.collider:getY())
+
+        if not self.grounded then
+            self.collider:setFriction(0)
         end
+
+        self:joystickControls()
     end
+    --self.sprite = (self.walking) and self.animator:getNextFrame(dt) or self.idle
+    if not self.collider:isDestroyed() then
+        self.parts.weapon:setPosition(self.collider:getX(), self.collider:getY())
+    end
+
     if not self.collider:isDestroyed() then
         for _, part in pairs(self.parts) do
           if part.update then

@@ -30,15 +30,8 @@ function Enemy:new(world, x, y, parts, sprites)
     self.health = parts.torso.health
     
     self.parts = parts 
-    self.instances = {}
 
-    for partType, part in pairs(parts) do
-      if part.class then
-        self.instances[partType] = part.class:new(world, sprites)
-      end
-    end
-
-    self.instances.weapon.attacks = 'player'
+    self.parts.weapon.attacks = 'player'
 
     world.manager:addObject(self, 'enemy')
 
@@ -74,7 +67,7 @@ end
 
 function Enemy:update(dt)
     if not self.collider:isDestroyed() then
-        self.instances.weapon:setPosition(self.collider:getX(), self.collider:getY())
+        self.parts.weapon:setPosition(self.collider:getX(), self.collider:getY())
 
         local closest = nil
         local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 500)
@@ -96,14 +89,14 @@ function Enemy:update(dt)
 
         if closest then
 
-            if self.instances.weapon.setAngle then
+            if self.parts.weapon.setAngle then
                 local x, y = self.collider:getPosition()
                 local playerx, playery = closest:getPosition()
 
                 --Aim and fire weapon
                 local dx = playerx - x
                 local dy = playery - y
-                self.instances.weapon:setAngle(math.atan2(dy, dx))
+                self.parts.weapon:setAngle(math.atan2(dy, dx))
 
                 rayHits = self.world:queryLine(x, y, playerx, playery, {'All', except={'item', 'weapon'}})
                 local closestHit
@@ -116,7 +109,7 @@ function Enemy:update(dt)
                 end
 
                 if closestHit and closestHit.collision_class == 'player' then
-                    self.instances.weapon:use()
+                    self.parts.weapon:use()
                 end
             end
 
@@ -152,7 +145,7 @@ function Enemy:update(dt)
             self.collider:setLinearVelocity(0, y)
         end
 
-        for _, part in pairs(self.instances) do
+        for _, part in pairs(self.parts) do
           if part.update then
             part:update(dt)
           end
@@ -164,8 +157,8 @@ function Enemy:render()
     if not self.collider:isDestroyed() then
         love.graphics.push()
             for partType, part in pairs(self.parts) do
-                if self.instances[partType] then
-                  self.instances[partType]:render()
+                if self.parts[partType].render then
+                  self.parts[partType]:render()
                 else
                   love.graphics.draw(part.sprite, self.collider:getX() - 16, self.collider:getY() - 16)
                 end
