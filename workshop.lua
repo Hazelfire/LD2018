@@ -229,7 +229,6 @@ function Workshop:drawSelection(x, y, head)
         
         local torsoOptions = options['torso']
 
-        print(#torsoOptions)
         local choiceIndex = choices[1] + 1
         local torsoChoice = torsoOptions[choiceIndex]
         love.graphics.draw(torsoOptions[choices[1] + 1].sprite, x, y + 32)

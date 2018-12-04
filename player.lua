@@ -90,7 +90,7 @@ function Player:joystickControls()
 
     local colliders = world:queryCircleArea(self.collider:getX(), self.collider:getY(), 30, {'item'})
     for _, collider in ipairs(colliders) do
-        if myJoystick:isGamepadDown("leftshoulder") then
+        if myJoystick:getGamepadAxis("triggerleft") > 0.5 then
             if not self.carry then
                 self.carry = world:addJoint('RopeJoint', collider, self.collider, collider:getX(), collider:getY(), self.collider:getX(), self.collider:getY(), 30, false)
             end
@@ -100,7 +100,7 @@ function Player:joystickControls()
     if self.carry and self.carry:isDestroyed() then
         self.carry = nil
     end
-    if not myJoystick:isGamepadDown("leftshoulder") then
+    if not (myJoystick:getGamepadAxis("triggerleft") > 0.5) then
         if self.carry then
             self.carry = self.carry:destroy()
         end
@@ -152,7 +152,7 @@ function Player:update(dt)
     if not self.collider:isDestroyed() then
         for _, part in pairs(self.parts) do
           if part.update then
-            part:update(dt)
+            part:update(dt, self)
           end
         end
     end

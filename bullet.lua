@@ -57,12 +57,13 @@ function Bullet:update(dt)
             local enemy = info.collider:getObject()
             enemy:damage(5)
         end
+        self:die()
     end
 end
 
 function Bullet:render()
     love.graphics.push()
-        if self.collider then
+        if not self.collider:isDestroyed() then
             love.graphics.draw(self.sprite, self.collider:getX(), self.collider:getY(), self.collider:getAngle(), 1, 1, BULLET_WIDTH / 2 + BULLET_IMG_X, BULLET_HEIGHT / 2 + BULLET_IMG_Y) 
         end
     love.graphics.pop()

@@ -9,6 +9,11 @@ Enemy = require 'enemy'
 Workshop = require 'workshop'
 
 Spanner = require 'parts/weapons/spanner'
+Bomb = require 'parts/weapons/bomb'
+Scimitar = require 'parts/weapons/scimitar'
+Spring = require 'parts/weapons/spring'
+Quarterstaff = require 'parts/weapons/quarterstaff'
+Spear = require 'parts/weapons/spear'
 BasicGun = require 'parts/weapons/basicgun'
 
 ScrawnyTorso = require 'parts/torsos/scrawny'
@@ -44,7 +49,7 @@ function love.load()
     world:addCollisionClass('item', {ignores={'player', 'enemy'}})
     world:addCollisionClass('dead', {ignores={'player', 'enemy'}})
     world:addCollisionClass('foot', {ignores={'player', 'dead','enemy', 'item'}})
-    world:addCollisionClass('bullet', {ignores={'player'}})
+    world:addCollisionClass('bullet', {ignores={'player', 'enemy'}})
     world:addCollisionClass('weapon', {ignores={'ground', 'player'}})
     world:setGravity(0, 1024)
 
@@ -57,14 +62,17 @@ function love.load()
     Terrain:makeLevel(world, LEVEL_WIDTH, LEVEL_HEIGHT ,sprites)
 
     Workshop:new(world,(LEVEL_WIDTH - 1) * TILE_SIZE, (LEVEL_HEIGHT - 1.5) * TILE_SIZE, sprites)
-    Crate:new(world, 150, 100, sprites)
+    Crate:new(world, 150, 100, sprites, Bomb)
+    Crate:new(world, 150, 100, sprites, Spear)
+    Crate:new(world, 150, 100, sprites, Quarterstaff)
+    Crate:new(world, 150, 100, sprites, Spring)
+    Crate:new(world, 150, 100, sprites, Scimitar)
     local enemyParts = {
         head = EnemyHead:new(world, sprites),
         torso = BuffTorso:new(world, sprites),
         weapon = BasicGun:new(world, sprites),
         feet = Treads:new(world, sprites),
     }
-    Enemy:new(world, math.random() * 500 + 200 , 100, enemyParts, sprites)
 
     time = 0
     enemyCount = 0
@@ -75,7 +83,7 @@ function love.update(dt)
     manager:updateObjects(dt)
     time = time + dt
 
-    if math.random() < 1 - math.exp(- time / 1000) then
+    if math.random() < (1 - math.exp(- time / 50000)) * math.sin(time * 2 * math.pi / 60) then
         enemyCount = table.getn(manager:getByTag('enemy'))
         if enemyCount < SPAWN_CAP then
             local enemyParts = {
@@ -84,7 +92,7 @@ function love.update(dt)
                 weapon = BasicGun:new(world, sprites),
                 feet = Treads:new(world, sprites),
             }
-            --        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
+            Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
         end
     end
 

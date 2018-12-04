@@ -26,7 +26,7 @@ function ScrawnyLegs:moveInDirection(player, nx)
 end
 
 function ScrawnyLegs:jump(player, grounded)
-    if grounded then
+    if true then
         local x, y = player.collider:getLinearVelocity()
         player.collider:setLinearVelocity(x, JUMP_SPEED)
     end
