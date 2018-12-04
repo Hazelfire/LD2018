@@ -65,6 +65,9 @@ function Bomb:use(player)
         if other.collision_class == self.attacks then
             other:getObject():damage(BOMB_DAMAGE)
         end
+    end
+    local others = self.world:queryCircleArea(self.x, self.y, BOMB_RADIUS)
+    for _, other in ipairs(others) do
         local px, py = player.collider:getPosition()
         local ox, oy = other:getPosition()
         local d = math.sqrt(math.pow(px - ox, 2) + math.pow(py - oy, 2))

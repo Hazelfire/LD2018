@@ -53,6 +53,7 @@ function Enemy:die()
     end
 
     self.collider:destroy()
+    self.footCollider:destroy()
 end
 
 function Enemy:getFootPos()

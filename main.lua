@@ -48,9 +48,9 @@ function love.load()
     world:addCollisionClass('enemy')
     world:addCollisionClass('item', {ignores={'player', 'enemy'}})
     world:addCollisionClass('dead', {ignores={'player', 'enemy'}})
-    world:addCollisionClass('foot', {ignores={'player', 'dead','enemy', 'item'}})
     world:addCollisionClass('bullet', {ignores={'player', 'enemy'}})
     world:addCollisionClass('weapon', {ignores={'ground', 'player', 'enemy'}})
+    world:addCollisionClass('foot', {ignores={'player', 'dead','enemy', 'item', 'weapon'}})
     world:setGravity(0, 1024)
 
     --world:setQueryDebugDrawing(true)
@@ -62,11 +62,6 @@ function love.load()
     Terrain:makeLevel(world, LEVEL_WIDTH, LEVEL_HEIGHT ,sprites)
 
     Workshop:new(world,(LEVEL_WIDTH - 1) * TILE_SIZE, (LEVEL_HEIGHT - 1.5) * TILE_SIZE, sprites)
-    Crate:new(world, 150, 100, sprites, Bomb)
-    Crate:new(world, 150, 100, sprites, Spear)
-    Crate:new(world, 150, 100, sprites, Quarterstaff)
-    Crate:new(world, 150, 100, sprites, Spring)
-    Crate:new(world, 150, 100, sprites, Scimitar)
 
     time = 0
     enemyCount = 0
@@ -89,11 +84,20 @@ function love.update(dt)
                 Scimitar,
                 Spanner,
             }
+            local enemyTorsos = {
+                ScrawnyTorso,
+                BuffTorso,
+            }
+            local enemyFeet = {
+                ScrawnyLegs,
+                Treads,
+            }
+
             local enemyParts = {
                 head = EnemyHead:new(world, sprites),
-                torso = BuffTorso:new(world, sprites),
+                torso = enemyTorsos[math.random(#enemyTorsos)]:new(world, sprites),
                 weapon = enemyWeapons[math.random(#enemyWeapons)]:new(world, sprites),
-                feet = Treads:new(world, sprites),
+                feet = enemyFeet[math.random(#enemyFeet)]:new(world, sprites),
             }
             Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
         end

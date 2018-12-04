@@ -91,6 +91,7 @@ function Workshop:update()
                     local parts = self:getChosenBody(joystick)
                     self:removeParts(parts)
                     self.canSpawn = self:determineCanSpawn()        
+                    self.updateOptions(self.savedParts)
                     Player:new(self.world, self.x, self.y, joystick, parts ,self.sprites )
                     break
                 end
@@ -103,7 +104,7 @@ function Workshop:update()
         table.insert(self.savedParts, part:getObject())
         self.canSpawn = self:determineCanSpawn()        
         if not (part:getObject().type == 'head') then
-            self:addOption(part:getObject())
+            self:updateOptions(self.savedParts)
         end
         part:destroy()
     end
@@ -123,15 +124,26 @@ function Workshop:update()
     end
 end
 
-function Workshop:addOption(newPart)
-    local partType = newPart.type
-    for _, part in pairs(self.options[partType]) do
-        if part.id == newPart.id then
-            return
+function Workshop:updateOptions(allParts)
+    self.options = {
+        torso = {},
+        weapon = {},
+        feet = {},
+    }
+    for _, part in pairs(allParts) do
+        local partType = part.type
+        local id = part.id
+        local duplicate = false
+        for _, existingPart in pairs(self.options[partType]) do
+            if id == existingPart.id then
+                duplicate = true
+            end
+        end
+
+        if not duplicate then
+            table.insert(self.options[partType], part)
         end
     end
-
-    table.insert(self.options[partType], newPart)
 end
 
 function Workshop:findWithType(bodyType)
