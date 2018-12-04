@@ -60,6 +60,7 @@ function P:new(world, sprites)
     self.sprite = sprites['head.png']
     self.world = world
     self.type = 'head'
+    self.id = "EnemyHead"
     return self
 end
 

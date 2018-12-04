@@ -1,15 +1,17 @@
 local bodyPart = require 'items/bodyPart'
 local P = {}
 
-function P:new(world, sprites)
+function P:new(world, sprites, joystick)
     self = {}
 
     setmetatable(self, P)
     P.__index = P
 
+    self.joystick = joystick
     self.sprite = sprites['player head.png']
     self.world = world
     self.type = 'head'
+    self.id = "PlayerHead"
     return self
 end
 

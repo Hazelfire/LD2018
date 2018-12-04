@@ -1,4 +1,4 @@
-BasicGun = require 'parts/weapons/basicgun'
+Bomb = require 'parts/weapons/bomb'
 
 local Crate = {}
 
@@ -27,11 +27,17 @@ function Crate:update()
             self:use()
         end
     end
+
+    if self.collider:enter('bullet') then
+        if self.collider:getEnterCollisionData('bullet').collider:getObject():active() then
+            self:use()
+        end
+    end
 end
 
 function Crate:use()
     
-    BasicGun:new(self.world, self.sprites):toPart(self.collider:getX(), self.collider:getY())
+    Bomb:new(self.world, self.sprites, 'player'):toPart(self.collider:getX(), self.collider:getY())
 
     self.collider:destroy()
 

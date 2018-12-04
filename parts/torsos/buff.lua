@@ -10,6 +10,8 @@ function BuffTorso:new(world, sprites)
     self.sprite = sprites['torso.png']
     self.world = world
     self.type = 'torso'
+    self.health = 20
+    self.id = "BuffTorso"
     return self
 end
 

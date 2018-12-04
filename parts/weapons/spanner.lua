@@ -8,6 +8,7 @@ local SPANNER_ARC = math.pi / 2
 local COOLDOWN = 0.2
 local SPANNER_REACH = 30
 local SPANNER_ANGLE_OFFSET = - 3 * math.pi / 4
+local SPANNER_WACK_SPEED = 50
 
 function Spanner:new(world, sprites)
     self = {}
@@ -16,10 +17,13 @@ function Spanner:new(world, sprites)
 
     setmetatable(self, Spanner)
     Spanner.__index = Spanner
+    self.id = "Spanner"
 
     self.px = 0
     self.py = 0
     self.angle = 0
+    self.damage = 5
+    self.type = 'weapon'
     self.collider = world:newRectangleCollider(0, 0, SPANNER_WIDTH, SPANNER_HEIGHT)
     self.collider:setCollisionClass('weapon')
     self.collider:setObject(self)
@@ -78,7 +82,9 @@ function Spanner:update(dt)
         local info = self.collider:getEnterCollisionData('enemy')
         local enemy = info.collider:getObject()
         if self.animationTime > 0 then
-            enemy:die()        
+            local nx, ny = info.contact:getNormal()
+            info.collider:applyLinearImpulse(-nx * SPANNER_WACK_SPEED, -ny * SPANNER_WACK_SPEED)
+            enemy:damage(self.damage)
         end
     end
 
@@ -100,26 +106,19 @@ function Spanner:render()
     love.graphics.pop()
 end
 
-
-return {
-  new = function(eee, world, sprites)
-    return {
-      sprite = sprites['spanner.png'],
-      class = Spanner,
-      toPart = function(self, x, y)
-        return bodyPart{
-          world=world,
-          x=x,
-          y=y,
-          width= 15,
-          height= 15,
-          ox = 0,
-          oy = 0,
-          sprite = self.sprite,
-          object = self,
-        }
-      end,
-      type = 'weapon'
+function Spanner:toPart(x, y)
+    return bodyPart{
+      world=world,
+      x=x,
+      y=y,
+      width= 15,
+      height= 15,
+      ox = 0,
+      oy = 0,
+      sprite = self.sprite,
+      object = self,
     }
-  end
-}
+end
+
+
+return Spanner

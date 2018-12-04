@@ -20,6 +20,7 @@ function BasicGun:new(world, sprites, attacks)
     self.bulletSprite = sprites['bullet.png']
     self.x = 0
     self.y = 0
+    self.id = "BasicGun"
     self.angle = 0
     self.world = world
     self.cooldown = 0
@@ -51,31 +52,26 @@ function BasicGun:update(dt)
     end
 end
 
+function BasicGun:toPart(x, y)
+    return bodyPart{
+        world= world,
+        x=x,
+        y=y,
+        width= GUN_WIDTH,
+        height= GUN_HEIGHT,
+        ox = GUN_IMG_X,
+        oy = GUN_IMG_Y,
+        sprite = self.sprite,
+        object = self,
+    }
+
+end
+
 function BasicGun:use()
     if self.cooldown <= 0 then
         bullet:new(self.world, self.x, self.y, self.angle, self.bulletSprite, 5, self.attacks)
         self.cooldown = COOLDOWN
     end
 end
-return {
-    new = function(_, world, sprites)
-        return {
-            sprite = sprites['gun.png'],
-            class = BasicGun,
-            toPart = function(self, x, y)
-                return bodyPart{
-                    world= world,
-                    x=x,
-                    y=y,
-                    width= GUN_WIDTH,
-                    height= GUN_HEIGHT,
-                    ox = GUN_IMG_X,
-                    oy = GUN_IMG_Y,
-                    sprite = self.sprite,
-                    object = self,
-                }
-            end,
-            type = 'weapon'
-        }
-    end
-}
+
+return BasicGun

@@ -10,6 +10,8 @@ function ScrawnyTorso:new(world, sprites)
     self.sprite = sprites['scrawny body 1.png']
     self.world = world
     self.type = 'torso'
+    self.health = 10
+    self.id = "ScrawnyTorso"
     return self
 end
 

@@ -53,26 +53,18 @@ function love.load()
     manager = Manager:new()
     world.manager = manager
 
-    enemyParts = {
-        head = EnemyHead:new(world, sprites),
-        torso = BuffTorso:new(world, sprites),
-        weapon = BasicGun:new(world, sprites),
-        feet = Treads:new(world, sprites),
-    }
-
-    playerParts = {
-        head = PlayerHead:new(world, sprites),
-        torso = ScrawnyTorso:new(world, sprites),
-        weapon = Spanner:new(world, sprites),
-        feet = ScrawnyLegs:new(world,sprites),  
-    }
-
 
     Terrain:makeLevel(world, LEVEL_WIDTH, LEVEL_HEIGHT ,sprites)
 
     Workshop:new(world,(LEVEL_WIDTH - 1) * TILE_SIZE, (LEVEL_HEIGHT - 1.5) * TILE_SIZE, sprites)
     Crate:new(world, 150, 100, sprites)
-    Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts, sprites)
+    local enemyParts = {
+        head = EnemyHead:new(world, sprites),
+        torso = BuffTorso:new(world, sprites),
+        weapon = BasicGun:new(world, sprites),
+        feet = Treads:new(world, sprites),
+    }
+    Enemy:new(world, math.random() * 500 + 200 , 100, enemyParts, sprites)
 
     time = 0
     enemyCount = 0
@@ -86,7 +78,13 @@ function love.update(dt)
     if math.random() < 1 - math.exp(- time / 1000) then
         enemyCount = table.getn(manager:getByTag('enemy'))
         if enemyCount < SPAWN_CAP then
-    --        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
+            local enemyParts = {
+                head = EnemyHead:new(world, sprites),
+                torso = BuffTorso:new(world, sprites),
+                weapon = BasicGun:new(world, sprites),
+                feet = Treads:new(world, sprites),
+            }
+            --        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
         end
     end
 
@@ -98,7 +96,14 @@ function love.update(dt)
 end
 
 function love.joystickadded(joystick)
-    Player:new(world, 100, 100, joystick, playerParts, sprites)
+    local thisPlayerParts = {
+        head = PlayerHead:new(world, sprites, joystick),
+        torso = ScrawnyTorso:new(world, sprites),
+        weapon = Spanner:new(world, sprites),
+        feet = ScrawnyLegs:new(world,sprites),  
+    }
+
+    Player:new(world, 100, 100, joystick, thisPlayerParts, sprites)
 end
 
 function love.draw()
