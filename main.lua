@@ -72,7 +72,8 @@ function love.update(dt)
     manager:updateObjects(dt)
     time = time + dt
 
-    if math.random() < (1 - math.exp(- time / 50000)) * math.sin(time * 2 * math.pi / 60) then
+    --if math.random() < (1 - math.exp(- time / 50000)) * math.sin(time * 2 * math.pi / 60) then
+    if math.random() < (math.min(time / 500, 0.01)) * math.sin(time * 2 * math.pi / 60) then
         enemyCount = table.getn(manager:getByTag('enemy'))
         if enemyCount < SPAWN_CAP then
             local enemyWeapons = {

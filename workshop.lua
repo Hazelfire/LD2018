@@ -131,17 +131,19 @@ function Workshop:updateOptions(allParts)
         feet = {},
     }
     for _, part in pairs(allParts) do
-        local partType = part.type
-        local id = part.id
-        local duplicate = false
-        for _, existingPart in pairs(self.options[partType]) do
-            if id == existingPart.id then
-                duplicate = true
+        if part.type ~= 'head' then
+            local partType = part.type
+            local id = part.id
+            local duplicate = false
+            for _, existingPart in pairs(self.options[partType]) do
+                if id == existingPart.id then
+                    duplicate = true
+                end
             end
-        end
 
-        if not duplicate then
-            table.insert(self.options[partType], part)
+            if not duplicate then
+                table.insert(self.options[partType], part)
+            end
         end
     end
 end
