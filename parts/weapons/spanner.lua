@@ -7,7 +7,7 @@ local SPANNER_ARC = math.pi / 2
 local COOLDOWN = 0.2
 local SPANNER_REACH = 30
 local SPANNER_ANGLE_OFFSET = - 3 * math.pi / 4
-local SPANNER_WACK_SPEED = 50
+local SPANNER_WACK_SPEED = 1000
 
 return melee{
     name = "Spanner",

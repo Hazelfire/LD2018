@@ -153,7 +153,7 @@ function Player:update(dt)
     if not self.collider:isDestroyed() then
         for _, part in pairs(self.parts) do
           if part.update then
-            part:update(dt)
+            part:update(dt, self)
           end
         end
     end

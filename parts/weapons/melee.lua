@@ -74,7 +74,7 @@ return function (args)
         self.collider:destroy()
     end
 
-    function Weapon:update(dt)
+    function Weapon:update(dt, player)
         if self.animationTime > 0 then
             local changeAngle, distance
             if not (WEAPON_ARC == 0) then
@@ -110,7 +110,13 @@ return function (args)
             local info = self.collider:getEnterCollisionData(self.attacks)
             local enemy = info.collider:getObject()
             if self.animationTime > 0 then
-                local nx, ny = info.contact:getNormal()
+                local ex, ey = enemy.collider:getPosition()
+                local px, py = player.collider:getPosition()
+                local dx = px - ex
+                local dy = py - ey
+                local d = math.sqrt(math.pow(dx, 2) + math.pow(dy, 2))
+                local nx = dx / d
+                local ny = dy / d
                 info.collider:applyLinearImpulse(-nx * WEAPON_WACK_SPEED, -ny * WEAPON_WACK_SPEED)
                 enemy:damage(self.damage)
             end

@@ -71,7 +71,6 @@ function love.load()
         weapon = BasicGun:new(world, sprites),
         feet = Treads:new(world, sprites),
     }
-    Enemy:new(world, math.random() * 500 + 200 , 100, enemyParts, sprites)
 
     time = 0
     enemyCount = 0
@@ -82,7 +81,7 @@ function love.update(dt)
     manager:updateObjects(dt)
     time = time + dt
 
-    if math.random() < 1 - math.exp(- time / 1000) then
+    if math.random() < 1 - math.exp(- time / 50000) then
         enemyCount = table.getn(manager:getByTag('enemy'))
         if enemyCount < SPAWN_CAP then
             local enemyParts = {
@@ -91,7 +90,7 @@ function love.update(dt)
                 weapon = BasicGun:new(world, sprites),
                 feet = Treads:new(world, sprites),
             }
-            --        Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
+            Enemy:new(world, math.random() * 500 + 50 , 100, enemyParts)
         end
     end
 

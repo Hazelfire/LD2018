@@ -9,7 +9,7 @@ BULLET_HEIGHT = 2
 BULLET_WIDTH = 5
 
 BULLET_SPEED = 1000
-LETHAL_SPEED = 500
+LETHAL_SPEED = 100
 
 function Bullet:new(world, x, y, angle, sprite, lifeTime)
     self = {}
