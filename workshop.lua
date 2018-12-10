@@ -232,23 +232,26 @@ end
 
 function Workshop:drawSelection(x, y, head)
     local joystick = head.joystick
-    local id = joystick:getID()
-    local selected = self.selected[id]
-    local choices = self.choices[id]
-    local options = self.options
-    love.graphics.push()
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.rectangle('fill', x, y + (32 * ( 1 + selected)), 32, 32)
-        love.graphics.draw(head.sprite, x, y)
-        
-        local torsoOptions = options['torso']
 
-        local choiceIndex = choices[1] + 1
-        local torsoChoice = torsoOptions[choiceIndex]
-        love.graphics.draw(torsoOptions[choices[1] + 1].sprite, x, y + 32)
-        love.graphics.draw(options['weapon'][choices[2] + 1].sprite, x, y + 32 * 2)
-        love.graphics.draw(options['feet'][choices[3] + 1].sprite, x, y + 32 * 3)
-    love.graphics.pop()
+    if self.hasHeadFor(joystick) then
+        local id = joystick:getID()
+        local selected = self.selected[id]
+        local choices = self.choices[id]
+        local options = self.options
+        love.graphics.push()
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.rectangle('fill', x, y + (32 * ( 1 + selected)), 32, 32)
+            love.graphics.draw(head.sprite, x, y)
+            
+            local torsoOptions = options['torso']
+
+            local choiceIndex = choices[1] + 1
+            local torsoChoice = torsoOptions[choiceIndex]
+            love.graphics.draw(torsoOptions[choices[1] + 1].sprite, x, y + 32)
+            love.graphics.draw(options['weapon'][choices[2] + 1].sprite, x, y + 32 * 2)
+            love.graphics.draw(options['feet'][choices[3] + 1].sprite, x, y + 32 * 3)
+        love.graphics.pop()
+    end
 end
 
 function Workshop:render()
