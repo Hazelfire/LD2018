@@ -110,7 +110,7 @@ return function (args)
         if self.collider:enter(self.attacks) then
             local info = self.collider:getEnterCollisionData(self.attacks)
             local enemy = info.collider:getObject()
-            if self.animationTime > 0 then
+            if enemy and self.animationTime > 0 then
                 local ex, ey = enemy.collider:getPosition()
                 local px, py = player.collider:getPosition()
                 local dx = px - ex

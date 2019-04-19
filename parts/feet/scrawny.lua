@@ -3,7 +3,7 @@ local ScrawnyLegs = {}
 
 local PLAYER_SPEED = 150
 local PLAYER_ACC = 10
-local JUMP_SPEED = -400
+local JUMP_SPEED = -600
 
 function ScrawnyLegs:new(world, sprites)
     self = {}

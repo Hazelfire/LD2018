@@ -3,7 +3,7 @@ DeadPlayer = require 'deadplayer'
 
 Player = {}
 
-PLAYER_HEIGHT = 28
+PLAYER_HEIGHT = 23
 PLAYER_WIDTH = 16
 PLAYER_SPEED = 150
 JUMP_SPEED = -600
@@ -24,7 +24,6 @@ function Player:new(world, x, y, joystick, parts, sprites)
 
     self.parts.weapon.attacks = 'enemy'
     self.parts.weapon:setAngle(0)
-    self.parts.head.joystick = joystick
 
     self.collider:setFixedRotation(true)
     self.footCollider = world:newRectangleCollider(x + PLAYER_WIDTH / 4, y + PLAYER_HEIGHT, PLAYER_WIDTH / 2, 2)

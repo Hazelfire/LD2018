@@ -57,6 +57,7 @@ end
 
 function Workshop:removeParts(parts)
     for _, part in pairs(parts) do 
+        print("Removing " .. part.type)
         table.remove(self.savedParts, getIndex(self.savedParts, part))
     end
 end
@@ -75,23 +76,58 @@ end
 function Workshop:getChosenBody(joystick)
     local chosen = self.choices[joystick:getID()]
     local options = self.options
+    local head = self:getHeadWithJoystick(joystick)
+    print(head.joystick:getID())
     return {
-        head = self:getHeadWithJoystick(joystick),
+        head = head,
         torso = options['torso'][chosen[1] + 1],
         weapon = options['weapon'][chosen[2] + 1],
         feet = options['feet'][chosen[3] + 1],
     }
 end
 
+function Workshop:removeChoice(joystick)
+  self.choices[joystick:getID()] = nil
+end
+
+function Workshop:removeHead(joystick)
+    local newParts  = {}
+    for _, part in pairs(self.savedParts) do 
+        if not (part.type == 'head' and part.joystick:getID() == joystick:getID()) then 
+          print(part.type)
+          if part.type == 'head' then
+            print(part.joystick:getID())
+            print(part.joystick:getID())
+          end
+        else
+          print("Removed Head")
+        end
+        table.insert(newParts, part)
+    end
+    self.savedParts = newParts
+end
+
+function Workshop:resetChoices(joystick)
+  local newChoices = {}
+  for id, part in pairs(self.choices) do 
+    newChoices[id] = {0, 0, 0}
+  end
+  self.choices = newChoices
+end
+
 function Workshop:update()
     if self.canSpawn then
         for _, joystick in ipairs(love.joystick.getJoysticks()) do
             if joystick:isGamepadDown("start") then
-                if self:hasHeadFor(joystick) then
+                if self.choices[joystick:getID()] ~= nil then
                     local parts = self:getChosenBody(joystick)
                     self:removeParts(parts)
                     self.canSpawn = self:determineCanSpawn()        
                     self:updateOptions(self.savedParts)
+                    self:removeHead(joystick)
+                    self:removeChoice(joystick)
+                    self:resetChoices(joystick)
+                    print(os.clock() .. " " .. joystick:getID())
                     Player:new(self.world, self.x, self.y, joystick, parts ,self.sprites )
                     break
                 end
@@ -107,21 +143,21 @@ function Workshop:update()
             self:updateOptions(self.savedParts)
         end
         part:destroy()
-    end
-
-    if self.canSpawn then
-        local heads = self:getHeads()
-        for i, head in ipairs(heads) do
-            if not self.choices[head.joystick:getID()] then
-                self.choices[head.joystick:getID()] = {
-                    0,
-                    0,
-                    0
-                }
-                self.selected[head.joystick:getID()] = 0
+        if self.canSpawn then
+            local heads = self:getHeads()
+            for i, head in ipairs(heads) do
+                if not self.choices[head.joystick:getID()] then
+                    self.choices[head.joystick:getID()] = {
+                        0,
+                        0,
+                        0
+                    }
+                    self.selected[head.joystick:getID()] = 0
+                end
             end
         end
     end
+
 end
 
 function Workshop:updateOptions(allParts)
@@ -134,14 +170,16 @@ function Workshop:updateOptions(allParts)
         local partType = part.type
         local id = part.id
         local duplicate = false
-        for _, existingPart in pairs(self.options[partType]) do
-            if id == existingPart.id then
-                duplicate = true
+        if not (partType == 'head') then
+            for _, existingPart in pairs(self.options[partType]) do
+                if id == existingPart.id then
+                    duplicate = true
+                end
             end
-        end
 
-        if not duplicate then
-            table.insert(self.options[partType], part)
+            if not duplicate then
+                table.insert(self.options[partType], part)
+            end
         end
     end
 end

@@ -6,7 +6,7 @@ terrain = P
 
 local WALL_WIDTH = 32
 
-local DENSITY = 0.4
+local DENSITY = 0.2
 local PLATFORM_WIDTH = 5
 local PLATFORM_VARIANCE = 2
 
@@ -15,8 +15,8 @@ function P:makeLevel(world, width, height, sprites, scale)
     P:makeBackground(world, sprites, width, height)
 
     for x=1,width - 1 do
-        for y=1,height - 1 ,2 do
-            if math.random() < 0.2 / PLATFORM_WIDTH then
+        for y=1,height - 3 do
+            if math.random() < DENSITY / PLATFORM_WIDTH then
                 platformWidth = math.min(math.floor(math.random() * PLATFORM_VARIANCE * 2 + (PLATFORM_WIDTH - PLATFORM_VARIANCE)), width - x )
                 P:makePlatform(x, y, platformWidth, world, sprites['platform.png'])
             end

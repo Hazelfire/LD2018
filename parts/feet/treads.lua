@@ -3,7 +3,7 @@ local Treads = {}
 
 local PLAYER_SPEED = 200
 local PLAYER_ACC = 1
-local JUMP_SPEED = -200
+local JUMP_SPEED = -400
 
 function Treads:new(world, sprites)
     self = {}
