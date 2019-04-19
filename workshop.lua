@@ -167,10 +167,17 @@ function Workshop:updateOptions(allParts)
         feet = {},
     }
     for _, part in pairs(allParts) do
+<<<<<<< HEAD
         local partType = part.type
         local id = part.id
         local duplicate = false
         if not (partType == 'head') then
+=======
+        if part.type ~= 'head' then
+            local partType = part.type
+            local id = part.id
+            local duplicate = false
+>>>>>>> 19b7e97f23b04d52b465de1aca009fa3fcdfe430
             for _, existingPart in pairs(self.options[partType]) do
                 if id == existingPart.id then
                     duplicate = true
@@ -268,23 +275,26 @@ end
 
 function Workshop:drawSelection(x, y, head)
     local joystick = head.joystick
-    local id = joystick:getID()
-    local selected = self.selected[id]
-    local choices = self.choices[id]
-    local options = self.options
-    love.graphics.push()
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.rectangle('fill', x, y + (32 * ( 1 + selected)), 32, 32)
-        love.graphics.draw(head.sprite, x, y)
-        
-        local torsoOptions = options['torso']
 
-        local choiceIndex = choices[1] + 1
-        local torsoChoice = torsoOptions[choiceIndex]
-        love.graphics.draw(torsoOptions[choices[1] + 1].sprite, x, y + 32)
-        love.graphics.draw(options['weapon'][choices[2] + 1].sprite, x, y + 32 * 2)
-        love.graphics.draw(options['feet'][choices[3] + 1].sprite, x, y + 32 * 3)
-    love.graphics.pop()
+    if self.hasHeadFor(joystick) then
+        local id = joystick:getID()
+        local selected = self.selected[id]
+        local choices = self.choices[id]
+        local options = self.options
+        love.graphics.push()
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.rectangle('fill', x, y + (32 * ( 1 + selected)), 32, 32)
+            love.graphics.draw(head.sprite, x, y)
+            
+            local torsoOptions = options['torso']
+
+            local choiceIndex = choices[1] + 1
+            local torsoChoice = torsoOptions[choiceIndex]
+            love.graphics.draw(torsoOptions[choices[1] + 1].sprite, x, y + 32)
+            love.graphics.draw(options['weapon'][choices[2] + 1].sprite, x, y + 32 * 2)
+            love.graphics.draw(options['feet'][choices[3] + 1].sprite, x, y + 32 * 3)
+        love.graphics.pop()
+    end
 end
 
 function Workshop:render()
